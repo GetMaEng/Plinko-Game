@@ -2,8 +2,8 @@ import { useEffect, useRef } from "react";
 import type { Ball } from "../types/Ball";
 
 // Area for Plinko Game
-const WIDTH = 1000;
-const HEIGHT = 1000;
+const WIDTH = 750;
+const HEIGHT = 600;
 
 // -------------------------------------------------------------------------------------------------
 // Size of peg & ball
@@ -33,13 +33,19 @@ const COLS = 15;
 const SPACING_X = WIDTH / COLS;
 const SPACING_Y = 50;
 
+const BIN_HEIGHT = 40;
+const BIN_Y = HEIGHT - BIN_HEIGHT;
+
 const BINS = 13;
 
 // -------------------------------------------------------------------------------------------------
 
-function PlinkoGamePlay() {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const ballsRef = useRef<Ball[]>([]);
+type Props = {
+  ballsRef: React.MutableRefObject<Ball[]>;
+};
+
+function PlinkoGamePlay({ ballsRef }: Props) {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const pegsRef = useRef<{ x: number; y: number }[]>([]);
 
   // --- Triangle pegs (start at 3) ---
@@ -88,7 +94,7 @@ function PlinkoGamePlay() {
       const binWidth = WIDTH / BINS;
       ctx.strokeStyle = "yellow";
       for (let i = 0; i < BINS; i++) {
-        ctx.strokeRect(i * binWidth, HEIGHT - 425, binWidth, 50);
+        ctx.strokeRect(i * binWidth, BIN_Y, binWidth, BIN_HEIGHT);
       }
 
       const balls = ballsRef.current;
@@ -142,7 +148,7 @@ function PlinkoGamePlay() {
         ball.vy = Math.max(-MAX_SPEED, Math.min(MAX_SPEED, ball.vy));
 
         // bottom
-        if (ball.y > HEIGHT - 425) {
+        if (ball.y > BIN_Y) {
           ball.active = false;
         }
       });
@@ -164,30 +170,14 @@ function PlinkoGamePlay() {
     return () => cancelAnimationFrame(animationFrame);
   }, []);
 
-  // --- Drop ball ---
-  const dropBall = () => {
-    ballsRef.current.push({
-      x: WIDTH / 2,
-      y: 20,
-      vx: (Math.random() - 0.5) * 0.8, // reduced randomness
-      vy: 0,
-      radius: BALL_RADIUS,
-      active: true,
-    });
-  };
   return (
     <>
-      <div style={{ textAlign: "center", background: "#111", color: "white" }}>
-        <h2>Plinko Game</h2>
-        {/* <p>Score: {score}</p> */}
-        <button onClick={dropBall}>Drop Ball</button>
-        <br />
-        <div className="flex justify-center">
+      <div className="flex flex-col items-center justify-center rounded-lg min-h-screen bg-black text-white">
+        <div className="flex items-center justify-center w-full">
             <canvas
             ref={canvasRef}
             width={WIDTH}
             height={HEIGHT}
-            style={{ border: "1px solid white", marginTop: 10 }}
             />
         </div>
       </div>

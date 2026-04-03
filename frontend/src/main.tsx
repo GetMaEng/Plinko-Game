@@ -7,8 +7,7 @@ import App from './App.tsx'
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 // Import pages to route for each page
-// import MainPage from "./pages/mainPage.tsx";
-import { MainPage, HistoryPage } from "./pages/index.ts";
+import { MainPage, HistoryPage, LeaderboardPage, LoginPage, SettingPage, SignupPage, WalletPage } from "./pages/index.ts";
 
 const router = createBrowserRouter([
   {
@@ -23,6 +22,26 @@ const router = createBrowserRouter([
     path: "/history-plinko",
     element: <HistoryPage/>
   },
+  {
+    path: "/leaderboard",
+    element: <LeaderboardPage/>
+  },
+  {
+    path: "/login",
+    element: <LoginPage/>
+  },
+  {
+    path: "/signup",
+    element: <SignupPage/>
+  },
+  {
+    path: "/setting",
+    element: <SettingPage/>
+  },
+  {
+    path: "/wallet",
+    element: <WalletPage/>
+  }
 ]);
 
 

@@ -1,23 +1,25 @@
 import React from 'react'
 import { IconUserCircle, IconDeviceGamepad2, IconHistory, IconWallet, IconChartBar, IconSettings, IconLogout } from "@tabler/icons-react";
+import { NavLink } from 'react-router-dom';
 
 type MenuItem = {
   label: string;
   icon: React.ComponentType<{ size?: number; className?: string }>;
+  link: string;
 };
 
 const menuItems: MenuItem[] = [
-  { label: "Play", icon: IconDeviceGamepad2 },
-  { label: "History", icon: IconHistory },
-  { label: "Wallet", icon: IconWallet },
-  { label: "Leaderboard", icon: IconChartBar },
-  { label: "Settings", icon: IconSettings },
+  { label: "Play", icon: IconDeviceGamepad2, link: "/main-plinko-game" },
+  { label: "History", icon: IconHistory, link: "/history-plinko" },
+  { label: "Wallet", icon: IconWallet, link: "/wallet" },
+  { label: "Leaderboard", icon: IconChartBar, link: "/leaderboard" },
+  { label: "Settings", icon: IconSettings, link: "/setting" },
 ];
 
 const SideBar = () => {
   return (
     <>
-      <div className='inter w-75 h-screen bg-[#0F172A] p-5 '>
+      <div className='inter w-75 h-screen bg-[#0F172A] p-5'>
         <header className='bg-[#13212E] p-5 rounded-lg'>
           <div className='flex justify-start items-center gap-5'>
             <IconUserCircle size={48} className='text-white'></IconUserCircle>
@@ -34,10 +36,10 @@ const SideBar = () => {
           {menuItems.map((item) => {
             return (
               <>
-                <div key={item.label} className='flex items-center gap-3 px-3 py-3 cursor-pointer hover:bg-[#1E293B] hover:rounded-md'>
+                <NavLink to={item.link} key={item.label} className='flex items-center gap-3 px-3 py-3 cursor-pointer hover:bg-[#1E293B] hover:rounded-md'>
                   <item.icon size={24}></item.icon>
                   <span>{item.label}</span>
-                </div> 
+                </NavLink> 
               </>
             );
           })}
