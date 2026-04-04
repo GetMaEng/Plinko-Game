@@ -19,8 +19,11 @@ const menuItems: MenuItem[] = [
 const SideBar = () => {
   return (
     <>
-      <div className='inter w-75 h-screen bg-[#0F172A] p-5'>
-        <header className='bg-[#13212E] p-5 rounded-lg'>
+      <div className='inter w-90 h-screen bg-[#0F172A] p-5'>
+        <header className='mb-5'>
+          <h1 className='text-[#AFFF9A] text-[24px] font-bold ml-5'>PLINKO GAME</h1>
+        </header>
+        <section className='bg-[#13212E] p-5 rounded-lg'>
           <div className='flex justify-start items-center gap-5'>
             <IconUserCircle size={48} className='text-white'></IconUserCircle>
             <div>
@@ -31,23 +34,25 @@ const SideBar = () => {
           <div className='mt-4 flex justify-center'>
             <button className='px-10 py-2 bg-[#1E2D3D] text-[#AFFF9A] rounded-md border-1 border-[#AFFF9A] font-bold cursor-pointer'>UPGRADE RANK</button>
           </div>
-        </header>
-        <div className='mt-10 text-[#94A3B8]'>
-          {menuItems.map((item) => {
-            return (
-              <>
-                <NavLink to={item.link} key={item.label} className='flex items-center gap-3 px-3 py-3 cursor-pointer hover:bg-[#1E293B] hover:rounded-md'>
-                  <item.icon size={24}></item.icon>
-                  <span>{item.label}</span>
-                </NavLink> 
-              </>
-            );
-          })}
-        </div>
-        <div className='mt-54 flex items-center gap-3 px-3 py-3 cursor-pointer text-[#94A3B8] hover:bg-[#1E293B] hover:rounded-md'>
-          <IconLogout size={24}></IconLogout>
-          <span>Log out</span>
-        </div> 
+        </section>
+        <section className='flex flex-col gap-40'>
+          <div className='mt-10 text-[#94A3B8]'>
+            {menuItems.map((item) => {
+              return (
+                <>
+                  <NavLink to={item.link} key={item.label} className='flex items-center gap-3 px-3 py-3 cursor-pointer hover:bg-[#1E293B] hover:rounded-md'>
+                    <item.icon size={24}></item.icon>
+                    <span>{item.label}</span>
+                  </NavLink> 
+                </>
+              );
+            })}
+          </div>
+          <div className=' flex items-center gap-3 px-3 py-3 cursor-pointer text-[#94A3B8] hover:bg-[#1E293B] hover:rounded-md'>
+            <IconLogout size={24}></IconLogout>
+            <span>Log out</span>
+          </div> 
+        </section>
       </div>
     </>
   )
