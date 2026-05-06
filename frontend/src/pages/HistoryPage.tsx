@@ -1,8 +1,18 @@
 import React from 'react'
+import SideBar from '../components/SideBar';
+import TopBar from '../components/TopBar';
 
 function HistoryPage() {
   return (
-    <div>H</div>
+    <>
+      <div className="flex">
+        <SideBar></SideBar>
+        <div className="w-full">
+          <TopBar></TopBar>
+          
+        </div>
+      </div>
+    </>
   )
 }
 

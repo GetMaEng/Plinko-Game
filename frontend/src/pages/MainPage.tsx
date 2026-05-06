@@ -21,7 +21,7 @@ function MainPage() {
         <SideBar></SideBar>
         <div className="w-full">
           <TopBar></TopBar>
-          <div className="flex justify-center items-center gap-5 w-full mt-5">
+          <div className="flex justify-center items-center gap-5 w-full my-5">
             <ConfigGamePlay 
             ballsRef={ballsRef} 
             width={WIDTH} 

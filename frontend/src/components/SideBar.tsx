@@ -19,7 +19,7 @@ const menuItems: MenuItem[] = [
 const SideBar = () => {
   return (
     <>
-      <div className='inter w-90 h-screen bg-[#0F172A] p-5'>
+      <div className='inter w-90 min-h-screen bg-[#0F172A] p-5'>
         <header className='mb-5'>
           <h1 className='text-[#AFFF9A] text-[24px] font-bold ml-5'>PLINKO GAME</h1>
         </header>
@@ -40,7 +40,12 @@ const SideBar = () => {
             {menuItems.map((item) => {
               return (
                 <>
-                  <NavLink to={item.link} key={item.label} className='flex items-center gap-3 px-3 py-3 cursor-pointer hover:bg-[#1E293B] hover:rounded-md'>
+                  <NavLink to={item.link} key={item.label} className={({ isActive }) =>
+                    `flex items-center gap-3 px-3 py-3 mb-1 rounded-md transition-colors
+                    ${isActive 
+                      ? 'bg-[#1E293B] text-[#AFFF9A] border-r-4 border-[#AFFF9A]' 
+                      : 'text-[#94A3B8] hover:bg-[#1E293B] hover:text-[#AFFF9A]'}`
+                  }>
                     <item.icon size={24}></item.icon>
                     <span>{item.label}</span>
                   </NavLink> 
@@ -48,9 +53,9 @@ const SideBar = () => {
               );
             })}
           </div>
-          <div className=' flex items-center gap-3 px-3 py-3 cursor-pointer text-[#94A3B8] hover:bg-[#1E293B] hover:rounded-md'>
+          <div className=' flex items-center gap-3 px-3 py-3 cursor-pointer text-[#94A3B8] hover:bg-[#1E293B] hover:text-[#AFFF9A] hover:rounded-md transition-colors'>
             <IconLogout size={24}></IconLogout>
-            <span>Log out</span>
+            <NavLink to={'/login'}>Log out</NavLink>
           </div> 
         </section>
       </div>

@@ -12,6 +12,40 @@
     font-family: "Inter", sans-serif;
 }
 
+/* Custom Scrollbar styled for the Poker Avatar Modal */
+
+/* Target only the container with the custom class */
+.avatar-grid {
+  /* 1. Set the scrollbar area background to match the dark modal */
+  scrollbar-color: #4ade80 #1e293b; /* thumb color | track color (Firefox) */
+  scrollbar-width: thin; /* Firefox only */
+}
+
+/* 2. Webkit (Chrome, Edge, Safari) specific styling */
+
+/* The whole scrollbar area */
+.avatar-grid::-webkit-scrollbar {
+  width: 10px; /* Width of the vertical scrollbar */
+}
+
+/* The 'track' or background of the scrollbar */
+.avatar-grid::-webkit-scrollbar-track {
+  background: #1e293b; /* bg-slate-800 to match the modal background */
+  border-radius: 10px; /* Fully rounded track */
+}
+
+/* The 'thumb' or draggable handle of the scrollbar */
+.avatar-grid::-webkit-scrollbar-thumb {
+  background: #4ade80; /* bg-green-400, matches the 'Deposit' neon accent */
+  border-radius: 10px; /* Fully rounded handle */
+  border: 2px solid #1e293b; /* Adds space around the thumb within the track */
+}
+
+/* When the user hovers over the handle */
+.avatar-grid::-webkit-scrollbar-thumb:hover {
+  background: #22c55e; /* bg-green-500, a slightly darker green for interaction */
+}
+
 /*
 Background color: #020617
 

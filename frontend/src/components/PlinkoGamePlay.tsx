@@ -98,7 +98,7 @@ function PlinkoGamePlay({ ballsRef, risk, rows }: Props) {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext("2d"); // canvas tag is a container used to draw graphics on a web page on the fly via scripting
     if (!ctx) return;
 
     let animationFrame: number;

@@ -40,9 +40,9 @@ function ConfigGamePlay({ ballsRef, width, risk, setRisk, rows, setRows }: Props
         <section className='w-full'>
             <div className='mb-3 font-medium text-sm'>RISK LEVEL</div>
             <div className='bg-[#1E2D3D] flex justify-around p-1 rounded-lg'>
-                <button onClick={() => setRisk("easy")} className={`${risk === "easy" ? "bg-[#334958]" : "bg-[#1E2D3D]"} py-3 px-8 text-lg rounded-lg text-[#DCE6F5] font-medium cursor-pointer hover:bg-[#334958] `}>Easy</button>
-                <button onClick={() => setRisk("medium")} className={`${risk === "medium" ? "bg-[#334958]" : "bg-[#1E2D3D]"} py-3 px-8 text-lg rounded-lg text-[#DCE6F5] font-medium cursor-pointer hover:bg-[#334958] `}>Medium</button>
-                <button  onClick={() => setRisk("hard")} className={`${risk === "hard" ? "bg-[#334958]" : "bg-[#1E2D3D]"} py-3 px-8 text-lg rounded-lg text-[#DCE6F5] font-medium cursor-pointer hover:bg-[#334958] `}>Hard</button>
+                <button onClick={() => setRisk("easy")} className={`${risk === "easy" ? "bg-[#334958] text-[#DCE6F5]" : "bg-[#1E2D3D] text-[#A2ACB9]"} py-3 px-8 text-lg rounded-lg font-medium cursor-pointer hover:bg-[#334958] hover:text-[#DCE6F5]`}>Easy</button>
+                <button onClick={() => setRisk("medium")} className={`${risk === "medium" ? "bg-[#334958] text-[#DCE6F5]" : "bg-[#1E2D3D] text-[#A2ACB9]"} py-3 px-8 text-lg rounded-lg font-medium cursor-pointer hover:bg-[#334958] hover:text-[#DCE6F5]`}>Medium</button>
+                <button  onClick={() => setRisk("hard")} className={`${risk === "hard" ? "bg-[#334958] text-[#DCE6F5]" : "bg-[#1E2D3D] text-[#A2ACB9]"} py-3 px-8 text-lg rounded-lg font-medium cursor-pointer hover:bg-[#334958] hover:text-[#DCE6F5]`}>Hard</button>
             </div>
         </section>
         <section className='w-full'>
@@ -59,7 +59,7 @@ function ConfigGamePlay({ ballsRef, width, risk, setRisk, rows, setRows }: Props
             onChange={(e) => setRows(Number(e.target.value) as RowCount)}
             className='w-full accent-white h-2 bg-[#1E2D3D] rounded-lg appearance-none cursor-pointer'/>
         </section>
-        <button onClick={() => dropBall(ballsRef, width)} className='space-grotesk text-black text-2xl py-4 rounded-lg font-bold bg-[#39FE2B] cursor-pointer'>BET</button>
+        <button onClick={() => dropBall(ballsRef, width)} className='space-grotesk text-black text-2xl py-4 rounded-lg font-bold bg-[#39FE2B] hover:bg-[#20df12] cursor-pointer'>BET</button>
     </div>
     </>
   )
