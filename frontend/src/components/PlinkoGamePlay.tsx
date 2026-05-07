@@ -16,10 +16,10 @@ const BALL_RADIUS = 6;
 
 // -------------------------------------------------------------------------------------------------
 // Tuned physics
-const GRAVITY = 0.08;
-const FRICTION = 0.99;
-const BOUNCE = 0.01;
-const MAX_SPEED = 2.0;
+const GRAVITY = 0.045;
+const FRICTION = 0.992;
+const BOUNCE = 0.35;
+const MAX_SPEED = 1.2;
 
 // -------------------------------------------------------------------------------------------------
 // Center bias
@@ -219,9 +219,14 @@ function PlinkoGamePlay({ ballsRef, risk, rows }: Props) {
             ball.vx -= 1 * dot * nx;
             ball.vy -= 2 * dot * ny;
 
+            const overlap = PEG_RADIUS + BALL_RADIUS - dist;
+
+            ball.x += nx * overlap;
+            ball.y += ny * overlap;
+
             // small bounce boost
-            ball.vx *= 1.05;
-            ball.vy *= 1.05;
+            // ball.vx *= 1.05;
+            // ball.vy *= 1.05;
 
             // --- extra center bias on collision --- (Custome: when hitting pegs make ball redirect to center)
             ball.vx += (WIDTH / 2 - ball.x) * COLLISION_BIAS;

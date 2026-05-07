@@ -12,7 +12,7 @@ const TopBar = () => {
                     <p className='font-bold text-[16px] text-[#AFFF9A]'>$1,250.00</p>
                 </div>
                 <div>
-                    <button className='px-5 py-2 bg-[#39FE2B] font-bold rounded-md'>Deposit</button>
+                    <button className='px-5 py-2 bg-[#39FE2B] text-lg font-bold rounded-md'>Deposit</button>
                 </div>
                 <IconBell size={28} className='text-[#94A3B8] '></IconBell>
                 <IconWallet size={28} className='text-[#94A3B8]'></IconWallet>

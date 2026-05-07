@@ -27,7 +27,7 @@ function ConfigGamePlay({ ballsRef, width, risk, setRisk, rows, setRows }: Props
             </div>
             <div className='bg-black flex items-center p-2 rounded-lg'>
                 <IconCurrencyDollar></IconCurrencyDollar>
-                <input type="number" className='text-white w-[50%] text-xl font-bold border-none
+                <input type="number" className='text-white w-[50%] text-xl border-none
                 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none
                 focus:outline-none focus:ring-0 focus:border-transparent'/>
                 <div className='flex gap-1'>
