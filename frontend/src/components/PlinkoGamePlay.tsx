@@ -16,8 +16,8 @@ const BALL_RADIUS = 6;
 
 // -------------------------------------------------------------------------------------------------
 // Tuned physics
-const GRAVITY = 0.045;
-const FRICTION = 0.992;
+const GRAVITY = 0.06;
+const FRICTION = 0.985;
 const BOUNCE = 0.35;
 const MAX_SPEED = 1.2;
 
