@@ -29,11 +29,7 @@ const SideBar = () => {
               <IconUserCircle size={48} className='text-white'></IconUserCircle>
               <div>
                 <p className='text-[#AFFF9A] font-bold'>Commander</p>
-                <p className='text-[#64748B]'>Level 42 VIP</p>
               </div>
-            </div>
-            <div className='mt-4 flex justify-center'>
-              <button className='px-10 py-2 bg-[#1E2D3D] text-[#AFFF9A] rounded-md border-1 border-[#AFFF9A] font-bold cursor-pointer'>UPGRADE RANK</button>
             </div>
           </section>
           <section className=''>

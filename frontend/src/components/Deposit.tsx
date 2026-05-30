@@ -39,7 +39,7 @@ function Deposit() {
                 </div>
                 <div className='flex justify-center items-center bg-[#13212E] w-full h-25 px-3 border-l-4 border-[#FF7351] rounded-lg'>
                 <div>
-                    <p className='inter text-[#A2ACB9] text-xs'>ACTIVE STAKES</p>
+                    <p className='inter text-[#A2ACB9] text-xs'>TOTAL DEPOSITS</p>
                     <h2 className='text-white text-3xl font-medium'>$1,110,400.00</h2>
                 </div>
                 </div>
@@ -82,7 +82,7 @@ function Deposit() {
             </section>
         </div>
         {/* Instant top-up */}
-        <div className='space-grotesk bg-[#192735] p-5 rounded-xl'>
+        <div className='space-grotesk w-95 bg-[#192735] p-5 rounded-xl'>
             <header className='flex items-center gap-2 my-5'>
             <IconCreditCardPay className='text-[#AFFF9A]'></IconCreditCardPay>
             <h1 className='text-white text-xl font-bold'>INSTANT TOP-UP</h1>

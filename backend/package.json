@@ -8,7 +8,9 @@
   },
   "dependencies": {
     "@hono/node-server": "^1.19.11",
-    "hono": "^4.12.9"
+    "@prisma/adapter-libsql": "^7.8.0",
+    "hono": "^4.12.9",
+    "prisma": "^7.8.0"
   },
   "devDependencies": {
     "@types/node": "^20.11.17",

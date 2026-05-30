@@ -1,0 +1,66 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+enum TransactionType {
+  deposit
+  withdraw
+}
+
+enum TransactionMethod {
+  bank_transfer
+  credit_card
+  bitcoin
+}
+
+model User {
+  userId          Int       @id @default(autoincrement())
+  username        String    @unique
+  email           String    @unique
+  password        String
+  imageProfile    String
+  createAt        DateTime  @default(now())
+  wallets         Wallet[]
+  histories       History[]
+  transactions    Transaction[] 
+}
+
+model Wallet {
+  walletId        Int       @id @default(autoincrement())
+  balance         Decimal   @default(0.00)       
+  totalEarning    Decimal   @default(0.00) 
+  totalDeposit    Decimal   @default(0.00) 
+  highestProfit   Decimal   @default(0.00) 
+  userId          Int
+  user            User      @relation(fields: [userId], references: [userId])
+}
+
+model History {
+  historyId       Int       @id @default(autoincrement())
+  time            DateTime  @default(now())
+  bet             Decimal   
+  multiple        String
+  amount          Decimal   
+  userId          Int
+  user            User      @relation(fields: [userId], references: [userId])
+}
+
+model Transaction {
+  transactionId   String     @id
+  method          TransactionMethod
+  type            TransactionType
+  time            DateTime   @default(now())
+  amount          Decimal      
+  userId          Int
+  user            User       @relation(fields: [userId], references: [userId])
+}
