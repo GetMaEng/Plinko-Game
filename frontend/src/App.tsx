@@ -1,7 +1,14 @@
 import { IconDeviceWatchStats2 } from '@tabler/icons-react'
+import * as userApi from "./api/user";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from 'react';
 
 
 function App() {
+  const navigate = useNavigate();
+  useEffect(() => {
+    navigate("/login");
+  }, []);
 
   return (
     <>

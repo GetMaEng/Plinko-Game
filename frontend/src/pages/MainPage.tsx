@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import type { Ball } from "../types/Ball";
 import type { RiskLevel, RowCount } from "../types/GameConfig";
 
@@ -6,6 +6,7 @@ import PlinkoGamePlay from "../components/PlinkoGamePlay";
 import ConfigGamePlay from "../components/ConfigGamePlay";
 import TopBar from "../components/TopBar";
 import SideBar from "../components/SideBar";
+
 
 const WIDTH = 750;
 

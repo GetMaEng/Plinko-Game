@@ -26,8 +26,9 @@ CREATE TABLE "History" (
     "bet" DECIMAL NOT NULL,
     "multiple" TEXT NOT NULL,
     "amount" DECIMAL NOT NULL,
-    "userId" INTEGER NOT NULL,
-    CONSTRAINT "History_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("userId") ON DELETE RESTRICT ON UPDATE CASCADE
+    "status" TEXT NOT NULL,
+    "walletId" INTEGER NOT NULL,
+    CONSTRAINT "History_walletId_fkey" FOREIGN KEY ("walletId") REFERENCES "Wallet" ("walletId") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- CreateTable
@@ -37,8 +38,8 @@ CREATE TABLE "Transaction" (
     "type" TEXT NOT NULL,
     "time" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "amount" DECIMAL NOT NULL,
-    "userId" INTEGER NOT NULL,
-    CONSTRAINT "Transaction_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("userId") ON DELETE RESTRICT ON UPDATE CASCADE
+    "walletId" INTEGER NOT NULL,
+    CONSTRAINT "Transaction_walletId_fkey" FOREIGN KEY ("walletId") REFERENCES "Wallet" ("walletId") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- CreateIndex

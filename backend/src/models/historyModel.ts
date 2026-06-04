@@ -1,21 +1,23 @@
+import type { Status } from "../generated/prisma/client.js";
 import prisma from "../lib/prisma.js";
 
-const createHistory = async(bet: number, multiple: string, amount: number, userId: number) => {
+const createHistory = async(bet: number, multiple: string, amount: number, status: Status, walletId: number) => {
     const history = await prisma.history.create({
         data: {
             bet: bet,
             multiple: multiple,
             amount: amount,
-            userId: userId
+            status: status,
+            walletId: walletId
         }
     })
     return history;
 }
 
-const getAllUserHistory = async(userId: number) => {
+const getAllUserHistory = async(walletId: number) => {
     const history = await prisma.history.findMany({
         where: {
-            userId: userId
+            walletId: walletId
         }
     })
     return history;

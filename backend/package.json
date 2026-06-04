@@ -9,6 +9,9 @@
   "dependencies": {
     "@hono/node-server": "^1.19.11",
     "@prisma/adapter-libsql": "^7.8.0",
+    "@prisma/client": "^7.8.0",
+    "bcryptjs": "^3.0.3",
+    "dotenv": "^17.4.2",
     "hono": "^4.12.9",
     "prisma": "^7.8.0"
   },

@@ -1,6 +1,9 @@
 import { IconPencil, IconUser, IconFingerprint, IconLock, IconShield, IconArrowNarrowLeft, IconBolt } from '@tabler/icons-react'
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import * as userApi from "../api/user";
+import * as walletApi from "../api/wallet";
+import z from 'zod';
 import ModalImage from "./ModalImage";
 import avatar1 from '../images/avatar-1.PNG';
 import avatar2 from '../images/avatar-2.PNG';
@@ -14,14 +17,102 @@ const POKER_IMAGES = [
   avatar1, avatar2, avatar3, avatar4, avatar5, avatar6, avatar7
 ];
 
+const registerSchema = z.object({
+    imageProfile: z
+        .string(),
+    username: z
+        .string()
+        .min(3, "At least 3 characters")
+        .max(20, "At most 20 characters")
+        .regex(/^[a-zA-Z0-9_]+$/, "Only letters, numbers, and underscores"),
+
+    email: z
+        .string()
+        .email("Must be a valid email"),
+
+    password: z
+        .string()
+        .min(6, "At least 6 characters")
+        .regex(/[A-Z]/, "Must contain an uppercase letter")
+        .regex(/[0-9]/, "Must contain a number"),
+
+    confirmPassword: z.string(),
+}).refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],   // points the error at the right field
+});
+
+type RegisterInput = z.infer<typeof registerSchema>;
+type FieldErrors = Partial<Record<keyof RegisterInput, string>>;
+
 function FormRegister() {
+    const navigate = useNavigate();
     const [currentImg, setCurrentImg] = useState(POKER_IMAGES[0]);
     const [tempSelectedImg, setTempSelectedImg] = useState(POKER_IMAGES[0]);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [formData, setFormData] = useState<RegisterInput>({
+        username: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+        imageProfile: currentImg
+    });
+    const [errors, setErrors] = useState<FieldErrors>({});
+
+    const [userId, setUserId] = useState<number>()
+    // API Create an account
+    const createUser = async (data: RegisterInput) => {
+        const response = await userApi.createUser(data.username, data.email, data.password, data.imageProfile);
+        if (response.success) {
+            setUserId(response.data.userId);
+        }
+    }
+    // API create wallet of user
+    const createWallet = async (userId: number) => {
+        console.log(userId);
+        const response = await walletApi.createWallet(userId);
+        if (response.success) {
+            navigate("/login");
+        }
+    }
+
+    useEffect(() => {
+        if(!userId) return;
+
+        createWallet(userId)
+    }, [userId]);
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setFormData((prev) => ({ ...prev, [name]: value }));
+        setErrors((prev) => ({ ...prev, [name]: undefined })); // clear error on change
+    };
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        
+        const result = registerSchema.safeParse(formData)
+
+        if (!result.success) {
+            const fieldErrors: FieldErrors = {};
+            result.error.issues.forEach((err) => {
+                const field = err.path[0] as keyof RegisterInput;
+                if (!fieldErrors[field]) {
+                    fieldErrors[field] = err.message; // keep first error per field
+                }
+            });
+            setErrors(fieldErrors);
+            return;
+        }
+
+        // Send to backend via API user
+        createUser(formData);
+        
+    }
 
   return (
-    <div className='inter flex justify-center mt-10'>
-        <form action="" className='w-115 h-210 bg-[#0b1824] shadow-xl/30 p-10 rounded-lg'>
+    <div className='inter flex justify-center items-center mt-10'>
+        <form onSubmit={handleSubmit} className='w-115 bg-[#0b1824] shadow-xl/30 p-10 rounded-lg'>
             <header className='mb-4'>
                 <h1 className='text-[#DCE6F5] text-2xl font-bold mb-3'>New Uplink</h1>
             </header>
@@ -44,25 +135,29 @@ function FormRegister() {
             </section>
             <section className='my-10'>
                 <label htmlFor="" className='space-grotesk text-[#94A3B8] text-sm font-light'>USERNAME</label> <br />
-                <div className='flex items-center bg-black px-4 py-4 mt-2 mb-5 gap-5 rounded-lg'>
+                <div className='flex items-center bg-black px-4 py-4 my-2 gap-5 rounded-lg'>
                     <IconUser className='text-gray-600'></IconUser>
-                    <input type="email" placeholder="Enter your username" className='text-white bg-black w-full placeholder:text-gray-600 border-none focus:outline-none focus:ring-0 focus:border-transparent'/>
+                    <input name='username' type="text" value={formData.username} onChange={handleChange} placeholder="Enter your username" className='text-white bg-black w-full placeholder:text-gray-600 border-none focus:outline-none focus:ring-0 focus:border-transparent'/>
                 </div>
+                {errors.username && <p className='text-red-500 mb-5'>{errors.username}</p>}
                 <label htmlFor="" className='space-grotesk text-[#94A3B8] text-sm font-light'>IDENTIFICATION</label> <br />
-                <div className='flex items-center bg-black px-4 py-4 mt-2 mb-5 gap-5 rounded-lg'>
+                <div className='flex items-center bg-black px-4 py-4 my-2 gap-5 rounded-lg'>
                     <IconFingerprint className='text-gray-600'></IconFingerprint>
-                    <input type="email" placeholder="Enter your email" className='text-white bg-black w-full placeholder:text-gray-600 border-none focus:outline-none focus:ring-0 focus:border-transparent'/>
+                    <input name='email' type="email" value={formData.email} onChange={handleChange} placeholder="Enter your email" className='text-white bg-black w-full placeholder:text-gray-600 border-none focus:outline-none focus:ring-0 focus:border-transparent'/>
                 </div>
+                {errors.email && <p className='text-red-500 mb-5'>{errors.email}</p>}
                 <label htmlFor="" className='space-grotesk text-[#94A3B8] text-sm font-light'>ACCESS KEY</label> <br />
-                <div className='flex items-center bg-black px-4 py-4 mt-2 mb-5 gap-5 rounded-lg'>
+                <div className='flex items-center bg-black px-4 py-4 my-2 gap-5 rounded-lg'>
                     <IconLock className='text-gray-600'></IconLock>
-                    <input type='password' placeholder='Enter your password' className='text-white bg-black w-full placeholder:text-gray-600 border-none focus:outline-none focus:ring-0 focus:border-transparent'/>
+                    <input name='password' type='password' value={formData.password} onChange={handleChange} placeholder='Enter your password' className='text-white bg-black w-full placeholder:text-gray-600 border-none focus:outline-none focus:ring-0 focus:border-transparent'/>
                 </div>
+                {errors.password && <p className='text-red-500 mb-5'>{errors.password}</p>}
                 <label htmlFor="" className='space-grotesk text-[#94A3B8] text-sm font-light'>CONFIRM ACCESS KEY</label> <br />
-                <div className='flex items-center bg-black px-4 py-4 mt-2 mb-5 gap-5 rounded-lg'>
+                <div className='flex items-center bg-black px-4 py-4 my-2 gap-5 rounded-lg'>
                     <IconShield className='text-gray-600'></IconShield>
-                    <input type='password' placeholder='Enter your confirm password' className='text-white bg-black w-full placeholder:text-gray-600 border-none focus:outline-none focus:ring-0 focus:border-transparent'/>
+                    <input name='confirmPassword' type='password' value={formData.confirmPassword} onChange={handleChange} placeholder='Enter your confirm password' className='text-white bg-black w-full placeholder:text-gray-600 border-none focus:outline-none focus:ring-0 focus:border-transparent'/>
                 </div>
+                {errors.confirmPassword && <p className='text-red-500 mb-5'>{errors.confirmPassword}</p>}
             </section>
             <button type='submit' className='space-grotesk bg-[#39FE2B] w-full py-3 mb-10 font-bold rounded-md hover:bg-[#20df12] cursor-pointer flex justify-center items-center gap-2'>INITIALIZE ACCOUNT <IconBolt></IconBolt> </button>
             <section className='flex justify-center text-sm w-full'>

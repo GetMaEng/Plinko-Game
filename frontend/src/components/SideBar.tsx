@@ -1,6 +1,8 @@
-import React from 'react'
-import { IconUserCircle, IconDeviceGamepad2, IconHistory, IconWallet, IconChartBar, IconSettings, IconLogout } from "@tabler/icons-react";
+import { useState, useEffect } from 'react'
+import { IconDeviceGamepad2, IconHistory, IconWallet, IconChartBar, IconSettings, IconLogout } from "@tabler/icons-react";
 import { NavLink } from 'react-router-dom';
+import type { User } from "../types/User"
+import * as userApi from "../api/user";
 
 type MenuItem = {
   label: string;
@@ -17,6 +19,26 @@ const menuItems: MenuItem[] = [
 ];
 
 const SideBar = () => {
+
+  const [user, setUser] = useState<User>();
+
+  // API call getMe - user information
+  const getMe = async () => {
+    const response = await userApi.getMe();
+    if (response.success) {
+      setUser({
+        username: response.data.username,
+        email: response.data.email,
+        imageProfile: response.data.imageProfile,
+        userId: response.data.userId,
+      })
+    }
+  }
+
+  useEffect(() => {
+    getMe();
+  }, []);
+
   return (
     <>
       <div className='inter w-90 min-h-screen bg-[#0F172A] p-5 flex flex-col justify-between'>
@@ -26,9 +48,13 @@ const SideBar = () => {
           </header>
           <section className='bg-[#13212E] p-5 rounded-lg'>
             <div className='flex justify-start items-center gap-5'>
-              <IconUserCircle size={48} className='text-white'></IconUserCircle>
+              <img 
+                src={user?.imageProfile} 
+                alt="Avatar" 
+                className="w-12 h-12 rounded-lg"
+                />
               <div>
-                <p className='text-[#AFFF9A] font-bold'>Commander</p>
+                <p className='text-[#AFFF9A] font-bold'>{user?.username}</p>
               </div>
             </div>
           </section>

@@ -23,6 +23,11 @@ enum TransactionMethod {
   bitcoin
 }
 
+enum Status {
+  profit
+  loss
+}
+
 model User {
   userId          Int       @id @default(autoincrement())
   username        String    @unique
@@ -31,8 +36,6 @@ model User {
   imageProfile    String
   createAt        DateTime  @default(now())
   wallets         Wallet[]
-  histories       History[]
-  transactions    Transaction[] 
 }
 
 model Wallet {
@@ -43,6 +46,8 @@ model Wallet {
   highestProfit   Decimal   @default(0.00) 
   userId          Int
   user            User      @relation(fields: [userId], references: [userId])
+  transactions    Transaction[] 
+  histories       History[]
 }
 
 model History {
@@ -51,8 +56,9 @@ model History {
   bet             Decimal   
   multiple        String
   amount          Decimal   
-  userId          Int
-  user            User      @relation(fields: [userId], references: [userId])
+  status          Status
+  walletId        Int
+  wallet          Wallet      @relation(fields: [walletId], references: [walletId])
 }
 
 model Transaction {
@@ -61,6 +67,6 @@ model Transaction {
   type            TransactionType
   time            DateTime   @default(now())
   amount          Decimal      
-  userId          Int
-  user            User       @relation(fields: [userId], references: [userId])
+  walletId        Int
+  wallet          Wallet     @relation(fields: [walletId], references: [walletId])
 }

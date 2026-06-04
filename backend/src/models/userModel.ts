@@ -1,4 +1,5 @@
 import prisma from "../lib/prisma.js";
+import bcrypt from "bcryptjs";
 
 const isDuplicate = async( username: string, email: string ) => {
     const user = await prisma.user.findFirst({
@@ -17,7 +18,7 @@ const createUser = async( username: string, email: string, password: string, ima
         data: {
             username: username,
             email: email,
-            password: password,
+            password: await bcrypt.hash(password, 10),
             imageProfile: imageProfile,
         }
     })

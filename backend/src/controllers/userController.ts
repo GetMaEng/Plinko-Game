@@ -1,5 +1,8 @@
 import type { Context } from "hono";
-import * as userModel from "../models/userModel.js"
+import * as userModel from "../models/userModel.js";
+import bcrypt from "bcryptjs";
+import { cookieOpts, generateToken } from "../lib/token.js";
+import { setCookie, deleteCookie } from "hono/cookie";
 
 const createUser = async(c: Context) => {
     try {
@@ -26,11 +29,27 @@ const createUser = async(c: Context) => {
             body.username, body.email, body.password, body.imageProfile
         );
 
+        const payload = {
+            userId: user.userId,
+            username: user.username,
+            email: user.email,
+            imageProfile: user.imageProfile
+        };
+
+        // Generate a JWT token
+        const token = await generateToken(payload);
+
+        // Put that JWT into a cookie
+        setCookie(c, "authToken", token, cookieOpts)
+
+        //
+
         return c.json(
             {
                 success: true,
                 msg: "Create a new account.",
-                data: user
+                data: user,
+                token: token
             },
             201
         )
@@ -71,6 +90,17 @@ const getUserInfoById = async(c: Context) => {
     try {
         const userId = Number(c.req.param("userId"));
         const user = await userModel.getUserInfoById(userId);
+
+        if (!user) {
+            return c.json(
+                { 
+                    success: false,
+                    msg: 'User not found' 
+                }, 
+                404
+            )
+        }
+
         return c.json(
             {
                 success: true,
@@ -128,8 +158,9 @@ const loginUser = async (c: Context) => {
                 404
             )
         }
-
-        if (user.password !== password) {
+        
+        const valid = await bcrypt.compare(password, user.password);
+        if (!valid) {
             return c.json(
                 {
                     success: false,
@@ -139,10 +170,17 @@ const loginUser = async (c: Context) => {
             )
         }
 
+        // If password is matching in database, then generate JWT
+        const token = await generateToken(user);
+
+        // Put JWT into a cookie
+        setCookie(c, "authToken", token, cookieOpts)
+
         return c.json(
             {
                 success: true,
                 msg: `Login successfully`,
+                token: token
             },
             200
         )
@@ -157,4 +195,55 @@ const loginUser = async (c: Context) => {
     }
 }
 
-export { createUser, getAllUserInfo, getUserInfoById, updateUserInfo, loginUser }
+const logoutUser = async (c: Context) => {
+    try {
+        deleteCookie(c, "authToken", {
+            path: '/',
+            secure: process.env.NODE_ENV === "production",
+            sameSite: 'Lax',
+            httpOnly: true,
+        });
+
+        return c.json(
+            {
+                success: true,
+                msg: "Logout successfully"
+            },
+            200
+        )
+    } catch (e) {
+        return c.json(
+            {
+                success: false,
+				msg: `${e}`,
+            },
+            500
+        )
+    }
+}
+
+const getMe = async (c: Context) => {
+    try {
+        // jwtPayload is set by middleware before this runs
+        const payload = c.get('jwtPayload')
+
+        return c.json(
+            { 
+                success: true,
+                msg: "This is your data.",
+                data: payload
+            },
+            200
+        )
+    } catch (e) {
+        return c.json(
+            {
+                success: false,
+				msg: `${e}`,
+            },
+            500
+        )
+    }
+}
+
+export { createUser, getAllUserInfo, getUserInfoById, updateUserInfo, loginUser, logoutUser, getMe }

@@ -9,6 +9,15 @@ const createWallet = async(userId: number) => {
     return wallet;
 }
 
+const getWalletId = async(userId: number) => {
+    const wallet = await prisma.wallet.findFirst({
+        where: {
+            userId: userId
+        }
+    })
+    return wallet;
+}
+
 const getUserWallet = async(walletId: number, userId: number) => {
     const wallet = await prisma.wallet.findUnique({
         where: {
@@ -22,8 +31,7 @@ const getUserWallet = async(walletId: number, userId: number) => {
 const updateBalance = async(walletId: number, userId: number, amount: number) => {
     const wallet = await prisma.wallet.update({
         where: {
-            walletId: walletId,
-            userId: userId
+            walletId: walletId
         },
         data: {
             balance: amount
@@ -35,8 +43,7 @@ const updateBalance = async(walletId: number, userId: number, amount: number) =>
 const updateTotalEarning = async(walletId: number, userId: number, amount: number) => {
     const wallet = await prisma.wallet.update({
         where: {
-            walletId: walletId,
-            userId: userId
+            walletId: walletId
         },
         data: {
             totalEarning: amount
@@ -48,8 +55,7 @@ const updateTotalEarning = async(walletId: number, userId: number, amount: numbe
 const updateTotalDeposit = async(walletId: number, userId: number, amount: number) => {
     const wallet = await prisma.wallet.update({
         where: {
-            walletId: walletId,
-            userId: userId
+            walletId: walletId
         },
         data: {
              totalDeposit : amount
@@ -61,8 +67,7 @@ const updateTotalDeposit = async(walletId: number, userId: number, amount: numbe
 const updateHighestProfit  = async(walletId:number, userId: number, amount: number) => {
     const wallet = await prisma.wallet.update({
         where: {
-            walletId: walletId,
-            userId: userId
+            walletId: walletId
         },
         data: {
              highestProfit: amount
@@ -71,4 +76,4 @@ const updateHighestProfit  = async(walletId:number, userId: number, amount: numb
     return wallet;
 }
 
-export { createWallet, getUserWallet, updateBalance, updateHighestProfit, updateTotalDeposit, updateTotalEarning }
+export { createWallet, getWalletId, getUserWallet, updateBalance, updateHighestProfit, updateTotalDeposit, updateTotalEarning }
