@@ -31,10 +31,11 @@ const getUserWallet = async(walletId: number, userId: number) => {
 const updateBalance = async(walletId: number, userId: number, amount: number) => {
     const wallet = await prisma.wallet.update({
         where: {
-            walletId: walletId
+            walletId: walletId,
+            userId: userId
         },
         data: {
-            balance: amount
+            balance: { increment: amount }
         }
     })
     return wallet;
@@ -43,10 +44,11 @@ const updateBalance = async(walletId: number, userId: number, amount: number) =>
 const updateTotalEarning = async(walletId: number, userId: number, amount: number) => {
     const wallet = await prisma.wallet.update({
         where: {
-            walletId: walletId
+            walletId: walletId,
+            userId: userId
         },
         data: {
-            totalEarning: amount
+            totalEarning: { increment: amount }
         }
     })
     return wallet;
@@ -55,7 +57,8 @@ const updateTotalEarning = async(walletId: number, userId: number, amount: numbe
 const updateTotalDeposit = async(walletId: number, userId: number, amount: number) => {
     const wallet = await prisma.wallet.update({
         where: {
-            walletId: walletId
+            walletId: walletId,
+            userId: userId
         },
         data: {
              totalDeposit : amount
@@ -67,7 +70,8 @@ const updateTotalDeposit = async(walletId: number, userId: number, amount: numbe
 const updateHighestProfit  = async(walletId:number, userId: number, amount: number) => {
     const wallet = await prisma.wallet.update({
         where: {
-            walletId: walletId
+            walletId: walletId,
+            userId: userId
         },
         data: {
              highestProfit: amount

@@ -123,8 +123,8 @@ const getUserInfoById = async(c: Context) => {
 const updateUserInfo = async(c: Context) => {
     try {
         const userId = Number(c.req.param("userId"));
-        const { username, iamgeProfile } = await c.req.json();
-        const user = await userModel.updateUserInfo(userId, username, iamgeProfile);
+        const { username, imageProfile } = await c.req.json();
+        const user = await userModel.updateUserInfo(userId, username, imageProfile);
         return c.json(
             {
                 success: true,

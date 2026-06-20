@@ -23,4 +23,26 @@ const getAllUserHistory = async(walletId: number) => {
     return history;
 }
 
-export { createHistory, getAllUserHistory }
+const getRecentBigWins = async (limit: number) => {
+    const wins = await prisma.history.findMany({
+        where: { status: 'profit' },
+        orderBy: { time: 'desc' },
+        take: limit,
+        include: {
+            wallet: {
+                include: {
+                    user: true
+                }
+            }
+        }
+    });
+
+    return wins.map((entry) => ({
+        username:   entry.wallet.user.username,
+        game:       'PLINKO',
+        multiplier: entry.multiple,
+        profit: Number(entry.amount) - Number(entry.bet),
+    }));
+}
+
+export { createHistory, getAllUserHistory, getRecentBigWins }

@@ -29,7 +29,11 @@ const createHistory = async (c: Context) => {
 
 const getAllUserHistory = async (c: Context) => {
     try {
-        const walletId = Number(c.req.param());
+        const walletId = Number(c.req.param("walletId"));
+
+        if (!walletId || isNaN(walletId)) {
+            return c.json({ success: false, msg: "Invalid walletId" }, 400);
+        }
 
         const histories = await historyModel.getAllUserHistory(walletId);
 
@@ -52,4 +56,14 @@ const getAllUserHistory = async (c: Context) => {
     }
 }
 
-export { createHistory, getAllUserHistory }
+const getRecentBigWins = async (c: Context) => {
+    try {
+        const limit = parseInt(c.req.query('limit') || '3');
+        const data = await historyModel.getRecentBigWins(limit);
+        return c.json({ success: true, data }, 200);
+    } catch (e) {
+        console.error('getRecentBigWins error:', e);
+        return c.json({ success: false, error: `${e}` }, 500);
+    }
+};
+export { createHistory, getAllUserHistory, getRecentBigWins }
