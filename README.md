@@ -61,44 +61,53 @@ VITE_API_BASE_URL=http://localhost:3000
 ---
  
 ## Project Structure
- 
+
 ```
 src/
-├── api/                  # API call functions
-│   ├── user.ts
-│   ├── wallet.ts
+├── api/                        # API call functions
 │   ├── history.ts
-│   └── transaction.ts
-├── components/           # Reusable UI components
-│   ├── SideBar.tsx       # Collapsible navigation sidebar
-│   ├── TopBar.tsx        # Header with wallet balance + deposit
-│   ├── PlinkoGamePlay.tsx # Canvas-based physics game
-│   ├── ConfigGamePlay.tsx # Bet amount, risk level, rows config
-│   ├── ModalImage.tsx    # Avatar picker modal
-│   └── ToggleSwitch.tsx  # Toggle for 2FA setting
-├── pages/                # Route-level page components
-│   ├── LoginPage.tsx
-│   ├── SignupPage.tsx
-│   ├── MainPage.tsx
+│   ├── transaction.ts
+│   ├── user.ts
+│   └── wallet.ts
+├── assets/                     # Static assets
+├── components/                 # Reusable UI components
+│   ├── ConfigGamePlay.tsx      # Bet amount, risk level, rows config
+│   ├── Deposit.tsx             # Deposit form with payment methods
+│   ├── FormLogin.tsx           # Login form with validation
+│   ├── FormRegister.tsx        # Signup form with validation
+│   ├── ModalImage.tsx          # Avatar picker modal
+│   ├── PlinkoGamePlay.tsx      # Canvas-based physics game
+│   ├── SideBar.tsx             # Collapsible navigation sidebar
+│   ├── ToggleSwitch.tsx        # Toggle for 2FA setting
+│   ├── TopBar.tsx              # Header with wallet balance + deposit
+│   └── Withdraw.tsx            # Withdraw form with payment methods
+├── images/                     # Avatar images (avatar-1 to avatar-7)
+├── lib/                        # Library utilities
+├── pages/                      # Route-level page components
 │   ├── HistoryPage.tsx
-│   ├── WalletPage.tsx
+│   ├── index.ts
 │   ├── LeaderboardPage.tsx
-│   └── SettingPage.tsx
-├── schemas/              # Zod validation schemas
+│   ├── LoginPage.tsx
+│   ├── MainPage.tsx
+│   ├── SettingPage.tsx
+│   ├── SignupPage.tsx
+│   └── WalletPage.tsx
+├── schemas/                    # Zod validation schemas
 │   ├── depositSchema.ts
 │   └── withdrawSchema.ts
-├── types/                # TypeScript interfaces
+├── types/                      # TypeScript interfaces
 │   ├── Ball.ts
 │   ├── GameConfig.ts
 │   ├── History.ts
 │   ├── Transaction.ts
 │   ├── User.ts
 │   └── Wallet.ts
-├── utils/                # Helper functions
-│   ├── bin.ts            # BIN_COLORS constant
-│   ├── dropBall.ts       # Ball spawning logic
-│   └── generateMultipliers.ts
-└── images/               # Avatar images (avatar-1 to avatar-7)
+└── utils/                      # Helper functions
+    ├── bin.ts                  # BIN_COLORS constant
+    ├── dropBall.ts             # Ball spawning logic
+    ├── generateMultipliers.ts
+    ├── paymentValidation.ts
+    └── riskConfig.ts
 ```
  
 ---
