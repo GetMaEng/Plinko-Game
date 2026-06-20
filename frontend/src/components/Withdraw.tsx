@@ -7,12 +7,11 @@ import { withdrawSchema, type WithdrawErrors, type WithdrawSchema } from "../sch
 
 interface WithdrawFormProps {
     onSuccess: () => void;
-    // ...your other props
 }
 
 function Withdraw({ onSuccess }: WithdrawFormProps) {
 
-  const [userId, setUserId] = useState<number>(Number(localStorage.getItem("userId")));
+  const userId = (Number(localStorage.getItem("userId")));
 
   // =============================================================
   //                        APIs Call Wallet
@@ -65,9 +64,6 @@ function Withdraw({ onSuccess }: WithdrawFormProps) {
   }, [wallet]);
 
   // =============================================================
-  // =============================================================
-
-  // =============================================================
   //                        APIs Call Transaction
   // =============================================================
   type TransactionType = 'deposit' | 'withdraw';
@@ -79,9 +75,6 @@ function Withdraw({ onSuccess }: WithdrawFormProps) {
         await onSuccess();
       }
   }
-
-  // =============================================================
-  // =============================================================
 
   // =============================================================
   //                      Withdraw Form
@@ -135,7 +128,9 @@ function Withdraw({ onSuccess }: WithdrawFormProps) {
     // All valid - send to API
     if (!walletId) return;
 
-    await updateBalance(walletId, userId, Number(wallet?.balance) - finalAmount)
+    console.log(walletId, userId, Number(wallet?.balance) - finalAmount);
+    
+    await updateBalance(walletId, userId, -finalAmount)
     await createTransaction(
         generateTransactionId(selectedMethod), 
         transactionMethod(selectedMethod),
@@ -178,9 +173,6 @@ function Withdraw({ onSuccess }: WithdrawFormProps) {
   };
 
   // =============================================================
-  // =============================================================
-
-  // =============================================================
   //                   Show Modal Successfully
   // =============================================================
 
@@ -190,156 +182,134 @@ function Withdraw({ onSuccess }: WithdrawFormProps) {
       
     }, [showModal])
 
-  // =============================================================
-  // =============================================================
-
   return (
     <>
-      <header className="ml-10 my-10">
-        <h1 className="space-grotesk text-white text-4xl font-medium">
-          Withdraw Assets
-        </h1>
-        <p className="inter text-[#A2ACB9] font-light">
-          Securely transfer your winnings to your preferred crypto wallet.
-        </p>
+      <header className="mx-4 md:ml-10 my-6 md:my-10">
+        <h1 className="space-grotesk text-white text-2xl md:text-4xl font-medium">Withdraw Assets</h1>
+        <p className="inter text-[#A2ACB9] font-light text-sm md:text-base">Securely transfer your winnings to your preferred crypto wallet.</p>
       </header>
-      <form onSubmit={handleSubmit} className="flex justify-between px-10 gap-15 pb-10">
+
+      <form onSubmit={handleSubmit} className="flex flex-col xl:flex-row justify-between px-4 md:px-6 xl:px-10 gap-8 xl:gap-15 pb-10">
+
         <div className="w-full">
-          {/* Select method */}
-          <section className="mb-10">
-            <header className="space-grotesk text-[#AFFF9A] font-bold text-xl mb-5">
+          {/* Method selector */}
+          <section className="mb-8 md:mb-10">
+            <header className="space-grotesk text-[#AFFF9A] font-bold text-lg md:text-xl mb-5">
               <h2>Withdrawal Method</h2>
             </header>
-            <div className="inter flex gap-5">
-              <button onClick={() => handleSelectMethod("bitcoin")} className={`bg-[#192735] w-full flex flex-col items-center p-10 rounded-lg cursor-pointer border-1
-                ${selectedMethod === "bitcoin" ? "border-[#AFFF9A]" : "border-[#192735]"}`
-              }>
-                <IconCurrencyBitcoin size={36} className="text-[#F7931A]"></IconCurrencyBitcoin>
-                <p className={`${selectedMethod === "bitcoin" ? "text-white" : "text-[#A2ACB9]"} font-medium`}>Bitcoin (BTC)</p>
+            <div className="inter flex flex-col sm:flex-row gap-4 md:gap-5">
+              <button type='button' onClick={() => handleSelectMethod("bitcoin")}
+                className={`bg-[#192735] w-full flex flex-col items-center p-6 md:p-10 rounded-lg cursor-pointer border ${selectedMethod === "bitcoin" ? "border-[#AFFF9A]" : "border-[#192735]"}`}>
+                <IconCurrencyBitcoin size={36} className="text-[#F7931A]" />
+                <p className={`${selectedMethod === "bitcoin" ? "text-white" : "text-[#A2ACB9]"} font-medium mt-2`}>Bitcoin (BTC)</p>
               </button>
-              <button onClick={() => handleSelectMethod("bank")} className={`bg-[#192735] w-full flex flex-col items-center p-10 rounded-lg cursor-pointer border-1
-                ${selectedMethod === "bank" ? " border-[#AFFF9A]" : "border-[#192735]"}`
-              }>
-                <IconBuildingBank size={36} className="text-[#60A5FA]"></IconBuildingBank>
-                <p className={`${selectedMethod === "bank" ? "text-white" : "text-[#A2ACB9]"} font-medium`}>Bank Transfer</p>
+              <button type='button' onClick={() => handleSelectMethod("bank")}
+                className={`bg-[#192735] w-full flex flex-col items-center p-6 md:p-10 rounded-lg cursor-pointer border ${selectedMethod === "bank" ? "border-[#AFFF9A]" : "border-[#192735]"}`}>
+                <IconBuildingBank size={36} className="text-[#60A5FA]" />
+                <p className={`${selectedMethod === "bank" ? "text-white" : "text-[#A2ACB9]"} font-medium mt-2`}>Bank Transfer</p>
               </button>
-              <button onClick={() => handleSelectMethod("card")} className={`bg-[#192735] w-full flex flex-col items-center p-10 rounded-lg cursor-pointer border-1
-                ${selectedMethod === "card" ? " border-[#AFFF9A]" : "border-[#192735]"}`
-              }>
-                <IconCreditCardFilled size={36} className="text-white"></IconCreditCardFilled>
-                <p className={`${selectedMethod === "card" ? "text-white" : "text-[#A2ACB9]"} font-medium`}>Credit Card</p>
+              <button type='button' onClick={() => handleSelectMethod("card")}
+                className={`bg-[#192735] w-full flex flex-col items-center p-6 md:p-10 rounded-lg cursor-pointer border ${selectedMethod === "card" ? "border-[#AFFF9A]" : "border-[#192735]"}`}>
+                <IconCreditCardFilled size={36} className="text-white" />
+                <p className={`${selectedMethod === "card" ? "text-white" : "text-[#A2ACB9]"} font-medium mt-2`}>Credit Card</p>
               </button>
             </div>
           </section>
-         {selectedMethod && 
-         <section>
-            <header className="space-grotesk text-[#AFFF9A] font-bold text-xl mb-5">
-              <h2>Destination Wallet</h2>
-            </header>
-            <div className='bg-[#192735] flex items-center px-2 py-4 rounded-lg'>
+
+          {/* Destination wallet */}
+          {selectedMethod && (
+            <section>
+              <header className="space-grotesk text-[#AFFF9A] font-bold text-lg md:text-xl mb-5">
+                <h2>Destination Wallet</h2>
+              </header>
+              <div className='bg-[#192735] flex items-center px-2 py-4 rounded-lg'>
                 <input type="text"
-                placeholder={selectedMethod === "bitcoin" ? 'Enter BTC wallet address' :
-                          selectedMethod === "bank" ? 'Enter Bank address' :
-                          'Enter Credit Card address'
-                }
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                className='text-white w-full text-lg px-3 placeholder:font-lignt
-                border-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none
-                focus:outline-none focus:ring-0 focus:border-transparent'/>
-            </div>
-            <div className="text-[#A2ACB9] flex items-center gap-1 mt-2">
-              <IconExclamationCircle size={16}></IconExclamationCircle>
-              <p className=" text-xs">Ensure the address is correct.</p>
-            </div>
-          </section>}
+                  placeholder={selectedMethod === "bitcoin" ? 'Enter BTC wallet address' : selectedMethod === "bank" ? 'Enter Bank address' : 'Enter Credit Card address'}
+                  value={address} onChange={(e) => setAddress(e.target.value)}
+                  className='text-white w-full text-base md:text-lg px-3 border-none focus:outline-none focus:ring-0 focus:border-transparent' />
+              </div>
+              <div className="text-[#A2ACB9] flex items-center gap-1 mt-2">
+                <IconExclamationCircle size={16} />
+                <p className="text-xs">Ensure the address is correct.</p>
+              </div>
+            </section>
+          )}
         </div>
-        {/* Withdraw Amount */}
-        <div className="space-grotesk w-95 bg-[#192735] p-5 rounded-xl">
+
+        {/* Withdraw amount panel */}
+        <div className="space-grotesk w-full xl:w-95 bg-[#192735] p-5 rounded-xl">
           <header className='flex items-center gap-2 my-5'>
-            <IconCreditCardRefund className='text-[#AFFF9A]'></IconCreditCardRefund>
+            <IconCreditCardRefund className='text-[#AFFF9A]' />
             <h1 className='text-white text-xl font-bold'>Withdraw Amount</h1>
-            </header>
-          {/* Amount */}
-          <section className="mb-10">
-            <div className='flex gap-5 mb-3'>
-                <button type="button" onClick={() => handleAmount(50)} className={`w-25 py-4 bg-[#1E2D3D] text-white font-bold rounded-md cursor-pointer border-1 hover:bg-[#263544] ${Number(amount) === 50 ? " border-[#AFFF9A]" : "border-[#1E2D3D]"}`}>$50</button>
-                <button type="button" onClick={() => handleAmount(100)} className={`w-25 py-4 bg-[#1E2D3D] text-white font-bold rounded-md cursor-pointer border-1 hover:bg-[#263544] ${Number(amount) === 100 ? "border-[#AFFF9A]" : "border-[#1E2D3D]"}`}>$100</button>
-                <button type="button" onClick={() => handleAmount(500)} className={`w-25 py-4 bg-[#1E2D3D] text-white font-bold rounded-md cursor-pointer border-1 hover:bg-[#263544] ${Number(amount) === 500 ? "border-[#AFFF9A]" : "border-[#1E2D3D]"}`}>$500</button>
-                <button type="button" onClick={() => wallet && handleAmount(wallet.balance)} className={`w-25 py-4 bg-[#1E2D3D] text-white font-bold rounded-md cursor-pointer border-1 hover:bg-[#263544] ${wallet && Number(amount) === wallet.balance ? "border-[#AFFF9A]" : "border-[#1E2D3D]"}`}>MAX</button>
+          </header>
+          <section className="mb-8 md:mb-10">
+            <div className='flex gap-2 md:gap-3 mb-3 flex-wrap'>
+              <button type="button" onClick={() => handleAmount(50)} className={`flex-1 min-w-[60px] py-3 md:py-4 bg-[#1E2D3D] text-white font-bold rounded-md cursor-pointer border hover:bg-[#263544] ${Number(amount) === 50 ? "border-[#AFFF9A]" : "border-[#1E2D3D]"}`}>$50</button>
+              <button type="button" onClick={() => handleAmount(100)} className={`flex-1 min-w-[60px] py-3 md:py-4 bg-[#1E2D3D] text-white font-bold rounded-md cursor-pointer border hover:bg-[#263544] ${Number(amount) === 100 ? "border-[#AFFF9A]" : "border-[#1E2D3D]"}`}>$100</button>
+              <button type="button" onClick={() => handleAmount(500)} className={`flex-1 min-w-[60px] py-3 md:py-4 bg-[#1E2D3D] text-white font-bold rounded-md cursor-pointer border hover:bg-[#263544] ${Number(amount) === 500 ? "border-[#AFFF9A]" : "border-[#1E2D3D]"}`}>$500</button>
+              <button type="button" onClick={() => wallet && handleAmount(wallet.balance)} className={`flex-1 min-w-[60px] py-3 md:py-4 bg-[#1E2D3D] text-white font-bold rounded-md cursor-pointer border hover:bg-[#263544] ${wallet && Number(amount) === wallet.balance ? "border-[#AFFF9A]" : "border-[#1E2D3D]"}`}>MAX</button>
             </div>
             <div className='bg-black flex items-center px-2 py-3 rounded-lg'>
-                <IconCurrencyDollar className='text-[#A2ACB9]'></IconCurrencyDollar>
-                <input type="text" value={amount} onChange={(e) => {
-                const value = e.target.value;
+              <IconCurrencyDollar className='text-[#A2ACB9]' />
+              <input type="text" value={amount} onChange={(e) => { if (/^\d*$/.test(e.target.value)) setAmount(e.target.value); }}
+                placeholder='Custom Amount'
+                className='text-white text-lg placeholder:font-bold border-none focus:outline-none focus:ring-0 focus:border-transparent w-full' />
+            </div>
+          </section>
 
-                // only numbers allowed
-                if (/^\d*$/.test(value)) {
-                    setAmount(value);
-                }
-                }} 
-                placeholder='Custom Amount' 
-                className='text-white text-lg placeholder:font-bold
-                border-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none
-                focus:outline-none focus:ring-0 focus:border-transparent'/>
-            </div>
-          </section>
-          {/* Details */}
-         {finalAmount > 0 &&
-         <>
-          <section className="">
-            <div className="inter flex justify-between font-medium text-sm mb-10">
-              <p className="text-[#A2ACB9]">Withdrawal Fee</p>
-              <p className="text-white">$2.50</p>
-            </div>
-            <div className="inter flex justify-between items-center font-bold">
-              <p className="text-white">FINAL AMOUNT</p>
-              <p className="text-[#AFFF9A] text-2xl">${finalAmount.toFixed(2)}</p>
-            </div>
-          </section>
-          </>
-          }
+          {finalAmount > 0 && (
+            <section>
+              <div className="inter flex justify-between font-medium text-sm mb-8 md:mb-10">
+                <p className="text-[#A2ACB9]">Withdrawal Fee</p>
+                <p className="text-white">$2.50</p>
+              </div>
+              <div className="inter flex justify-between items-center font-bold">
+                <p className="text-white">FINAL AMOUNT</p>
+                <p className="text-[#AFFF9A] text-xl md:text-2xl">${finalAmount.toFixed(2)}</p>
+              </div>
+            </section>
+          )}
+
           <section>
             <p className="text-[#A2ACB9] text-xs my-4 text-center">
-              BY CONFIRMING, YOU AGREE TO THE PROCESSING OF THIS <br /> 
-              TRANSACTION ON THE BLOCKCHAIN. FINAL SETTLEMENT TIME <br /> DEPENDS ON NETWORK CONGESTION.
+              BY CONFIRMING, YOU AGREE TO THE PROCESSING OF THIS TRANSACTION ON THE BLOCKCHAIN. FINAL SETTLEMENT TIME DEPENDS ON NETWORK CONGESTION.
             </p>
           </section>
-          {/* Errors */}
+
           {errors.amount && <p className="text-red-500 text-center text-sm">{errors.amount}</p>}
-          {errors.paymentMethod && <p className="text-red-500 text-center  text-sm">{errors.paymentMethod}</p>}
+          {errors.paymentMethod && <p className="text-red-500 text-center text-sm">{errors.paymentMethod}</p>}
           {selectedMethod === 'bitcoin' && errors.address && <p className="text-red-500 text-center text-sm">{errors.address}</p>}
           {selectedMethod === 'bank' && errors.iban && <p className="text-red-500 text-center text-sm">{errors.iban}</p>}
           {selectedMethod === 'card' && errors.cardNumber && <p className="text-red-500 text-center text-sm">{errors.cardNumber}</p>}
 
-          {/* Withdraw */}
           <button type="submit" className='bg-[#39FE2B] w-full py-4 mt-4 text-xl font-bold rounded-md hover:bg-[#20df12] cursor-pointer'>CONFIRM WITHDRAW</button>
         </div>
       </form>
+
       {/* Success Modal */}
       {showModal && (
-      <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-          <div className="bg-[#192735] rounded-xl p-8 w-90 flex flex-col items-center gap-4 shadow-xl">
-              <div className="bg-[#1E2D3D] rounded-full p-4">
-                  <IconCreditCardRefund className="text-[#AFFF9A] w-10 h-10" />
-              </div>
-              <h2 className="text-white text-xl font-bold space-grotesk">Withdrawal Successful</h2>
-              <p className="text-[#A2ACB9] inter text-sm text-center">
-                  <span className="text-[#AFFF9A] font-semibold">${finalAmount.toFixed(2)}</span> has been sent to your {selectedMethod} address.
-              </p>
-              <div className="bg-[#1E2D3D] rounded-lg px-4 py-3 w-full">
-                  <p className="text-[#A2ACB9] inter text-xs mb-1">Destination</p>
-                  <p className="text-white inter text-sm break-all">{address}</p>
-              </div>
-              <button onClick={() => { setShowModal(false); setAmount(""); setAddress(""); setSelectedMethod("bitcoin"); }}
-                  className="bg-[#39FE2B] w-full py-3 font-bold rounded-md hover:bg-[#20df12] cursor-pointer mt-2">
-                  DONE
-              </button>
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 px-4">
+          <div className="bg-[#192735] rounded-xl p-6 md:p-8 w-full max-w-sm flex flex-col items-center gap-4 shadow-xl">
+            <div className="bg-[#1E2D3D] rounded-full p-4">
+              <IconCreditCardRefund className="text-[#AFFF9A] w-10 h-10" />
+            </div>
+            <h2 className="text-white text-xl font-bold space-grotesk">Withdrawal Successful</h2>
+            <p className="text-[#A2ACB9] inter text-sm text-center">
+              <span className="text-[#AFFF9A] font-semibold">${finalAmount.toFixed(2)}</span> has been sent to your {selectedMethod} address.
+            </p>
+            <div className="bg-[#1E2D3D] rounded-lg px-4 py-3 w-full">
+              <p className="text-[#A2ACB9] inter text-xs mb-1">Destination</p>
+              <p className="text-white inter text-sm break-all">{address}</p>
+            </div>
+            <button onClick={() => { setShowModal(false); setAmount(""); setAddress(""); setSelectedMethod("bitcoin"); }}
+              className="bg-[#39FE2B] w-full py-3 font-bold rounded-md hover:bg-[#20df12] cursor-pointer mt-2">
+              DONE
+            </button>
           </div>
-      </div>
+        </div>
       )}
     </>
-  );
+  )
 }
 
 export default Withdraw;

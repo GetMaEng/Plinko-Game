@@ -14,7 +14,7 @@ interface TransactionTableProps {
 
 function Deposit({ transactions, onSuccess }: TransactionTableProps) {
 
-    const [userId, setUserId] = useState<number>(Number(localStorage.getItem("userId")));
+    const userId = (Number(localStorage.getItem("userId")));
 
     // =============================================================
     //                        APIs Call Wallet
@@ -72,9 +72,6 @@ function Deposit({ transactions, onSuccess }: TransactionTableProps) {
     }, [wallet]);
 
     // =============================================================
-    // =============================================================
-
-    // =============================================================
     //                        APIs Call Transaction
     // =============================================================
     type TransactionType = 'deposit' | 'withdraw';
@@ -86,9 +83,6 @@ function Deposit({ transactions, onSuccess }: TransactionTableProps) {
         await onSuccess();
       }
     }
-
-    // =============================================================
-    // =============================================================
 
     // =============================================================
     //                        Convert Time
@@ -118,9 +112,6 @@ function Deposit({ transactions, onSuccess }: TransactionTableProps) {
     };
 
     // =============================================================
-    // =============================================================
-
-    // =============================================================
     //                        Pagination
     // =============================================================
 
@@ -137,9 +128,6 @@ function Deposit({ transactions, onSuccess }: TransactionTableProps) {
         (currentPage - 1) * ROWS_PER_PAGE,
         currentPage * ROWS_PER_PAGE
     );
-
-    // =============================================================
-    // =============================================================
 
     // =============================================================
     //                        Deposit Form
@@ -200,7 +188,7 @@ function Deposit({ transactions, onSuccess }: TransactionTableProps) {
 
         // All valid — send to API
         console.log('Submit:', result.data);
-        await updateBalance(walletId, userId, Number(wallet?.balance) + depositAmount);
+        await updateBalance(walletId, userId, depositAmount);
         await createTransaction(
             generateTransactionId(selectedPayment), 
             transactionMethod(selectedPayment),
@@ -238,9 +226,6 @@ function Deposit({ transactions, onSuccess }: TransactionTableProps) {
     }
 
     // =============================================================
-    // =============================================================
-
-    // =============================================================
     //                   Show Modal Successfully
     // =============================================================
 
@@ -258,300 +243,196 @@ function Deposit({ transactions, onSuccess }: TransactionTableProps) {
         }
     }, [showModal])
 
-    // =============================================================
-    // =============================================================
-
-  return (
+    return (
     <>
-    <header className='ml-10 my-10'>
-        <h1 className='space-grotesk text-white text-4xl font-medium'>Wallet Summary</h1>
-        <p className='inter text-[#A2ACB9] font-light'>Manage your kinetic assets and transaction history</p>
-    </header>
-    <div className='flex justify-center gap-15 pb-10'>
-        <div>
-            {/* Dashboard of User => Balance, Top Earning, Active Stakes */}
+        <header className='mx-4 md:ml-10 my-6 md:my-10'>
+        <h1 className='space-grotesk text-white text-2xl md:text-4xl font-medium'>Wallet Summary</h1>
+        <p className='inter text-[#A2ACB9] font-light text-sm md:text-base'>Manage your kinetic assets and transaction history</p>
+        </header>
+
+        <div className='flex flex-col xl:flex-row justify-center gap-6 xl:gap-15 pb-10 px-4 md:px-6 xl:px-0'>
+
+        <div className='w-full xl:w-auto'>
+            {/* Stats cards */}
             <section>
-            <div className='space-grotesk flex gap-5'>
-                <div className='flex justify-center items-center bg-[#13212E] w-full h-25 px-3 border-l-4 border-[#AFFF9A] rounded-lg'>
+            <div className='space-grotesk flex flex-col sm:flex-row gap-4'>
+                <div className='flex justify-center items-center bg-[#13212E] w-full h-24 md:h-25 px-3 border-l-4 border-[#AFFF9A] rounded-lg'>
                 <div>
                     <p className='inter text-[#A2ACB9] text-xs'>AVAILABLE BALANCE</p>
-                    <h2 className='text-white text-3xl font-medium'>${wallet?.balance}</h2>
+                    <h2 className='text-white text-2xl md:text-3xl font-medium'>${parseFloat(String(wallet?.balance || 0)).toFixed(2)}</h2>
                 </div>
                 </div>
-                <div className='flex justify-center items-center bg-[#13212E] w-full h-25 px-3 border-l-4 border-[#FFC965] rounded-lg'>
+                <div className='flex justify-center items-center bg-[#13212E] w-full h-24 md:h-25 px-3 border-l-4 border-[#FFC965] rounded-lg'>
                 <div>
                     <p className='inter text-[#A2ACB9] text-xs'>TOTAL EARNINGS</p>
-                    <h2 className='text-white text-3xl font-medium'>${wallet?.totalEarning}</h2>
+                    <h2 className='text-white text-2xl md:text-3xl font-medium'>${parseFloat(String(wallet?.totalEarning || 0)).toFixed(2)}</h2>
                 </div>
                 </div>
-                <div className='flex justify-center items-center bg-[#13212E] w-full h-25 px-3 border-l-4 border-[#FF7351] rounded-lg'>
+                <div className='flex justify-center items-center bg-[#13212E] w-full h-24 md:h-25 px-3 border-l-4 border-[#FF7351] rounded-lg'>
                 <div>
                     <p className='inter text-[#A2ACB9] text-xs'>TOTAL DEPOSITS</p>
-                    <h2 className='text-white text-3xl font-medium'>${wallet?.totalDeposit}</h2>
+                    <h2 className='text-white text-2xl md:text-3xl font-medium'>${parseFloat(String(wallet?.totalDeposit || 0)).toFixed(2)}</h2>
                 </div>
                 </div>
             </div>
             </section>
-            {/* History: recent transaction */}
-            <section className='w-175 mt-10 rounded-lg'>
+
+            {/* Transaction table */}
+            <section className='w-full mt-8 md:mt-10 rounded-lg overflow-x-auto'>
             <header className='space-grotesk py-5 bg-[#09141F]'>
                 <p className='ml-4 text-white font-medium'>RECENT EARNING</p>
             </header>
-            <table className='w-175 border-collapse border-spacing-y-0 bg-[#09141F]'>
+            <table className='w-full min-w-[560px] border-collapse bg-[#09141F]'>
                 <thead className='space-grotesk text-[#A2ACB9] font-light bg-[#13212E]'>
                 <tr>
-                    <th className="text-left px-4 py-5">TRANSACTION ID</th>
-                    <th className="text-left px-4 py-5">METHOD</th>
-                    <th className="text-left px-4 py-5">TIME</th>
-                    <th className="text-left px-4 py-5">MONEY</th>
+                    <th className="text-left px-4 py-5 text-xs md:text-sm">TRANSACTION ID</th>
+                    <th className="text-left px-4 py-5 text-xs md:text-sm">METHOD</th>
+                    <th className="text-left px-4 py-5 text-xs md:text-sm">TIME</th>
+                    <th className="text-left px-4 py-5 text-xs md:text-sm">MONEY</th>
                 </tr>
                 </thead>
                 <tbody>
-                    {transactions.length !== 0 && 
-                    (
-                        paginated.map((transaction) => (
-                            <>
-                            <tr className='inter font-light border-b border-[#13212E]'>
-                                <td className='text-white px-4 py-5'>{transaction.transactionId}</td>
-                                <td className='text-white px-4 py-5'>{transaction.method}</td>
-                                <td className='text-[#A2ACB9] px-4 py-5'>{timeAgo(transaction.time)}</td>
-                                <td className={`space-grotesk ${transaction.type === "deposit" ? "text-[#39FE2B]" : "text-red-500"} px-4 py-5 font-medium`}>{transaction.type === "deposit" ? `+$${transaction.amount}` : `-$${transaction.amount}`}</td>
-                            </tr>
-                            </>
-                        ))
-                    )
-                    }
+                {transactions.length !== 0 && paginated.map((transaction) => (
+                    <tr key={transaction.transactionId} className='inter font-light border-b border-[#13212E]'>
+                    <td className='text-white px-4 py-4 text-xs md:text-sm'>{transaction.transactionId}</td>
+                    <td className='text-white px-4 py-4 text-xs md:text-sm'>{transaction.method}</td>
+                    <td className='text-[#A2ACB9] px-4 py-4 text-xs md:text-sm'>{timeAgo(transaction.time)}</td>
+                    <td className={`space-grotesk px-4 py-4 text-xs md:text-sm font-medium ${transaction.type === "deposit" ? "text-[#39FE2B]" : "text-red-500"}`}>
+                        {transaction.type === "deposit" ? `+$${transaction.amount}` : `-$${transaction.amount}`}
+                    </td>
+                    </tr>
+                ))}
                 </tbody>
             </table>
             {transactions.length === 0 && <p className='text-white text-lg text-center mt-5'>No transactions found.</p>}
+
             {/* Pagination */}
-            <div className='flex items-center justify-between w-175 mt-3 px-1'>
+            <div className='flex flex-col sm:flex-row items-center justify-between mt-3 px-1 gap-2'>
                 <p className='text-[#A2ACB9] text-sm inter font-light'>
-                    Showing {Math.min((currentPage - 1) * ROWS_PER_PAGE + 1, transactions.length)}–{Math.min(currentPage * ROWS_PER_PAGE, transactions.length)} of {transactions.length}
+                Showing {Math.min((currentPage - 1) * ROWS_PER_PAGE + 1, transactions.length)}–{Math.min(currentPage * ROWS_PER_PAGE, transactions.length)} of {transactions.length}
                 </p>
-
                 <div className='flex items-center gap-1'>
-                    {/* Prev */}
-                    <button
-                        onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
-                        disabled={currentPage === 1}
-                        className='px-3 py-1.5 text-sm inter text-[#A2ACB9] bg-[#13212E] hover:bg-[#1a2f42] disabled:opacity-30 disabled:cursor-not-allowed transition-colors rounded'
-                    >
-                        ‹
+                <button onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))} disabled={currentPage === 1}
+                    className='px-3 py-1.5 text-sm inter text-[#A2ACB9] bg-[#13212E] hover:bg-[#1a2f42] disabled:opacity-30 disabled:cursor-not-allowed transition-colors rounded'>‹</button>
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                    <button key={page} onClick={() => setCurrentPage(page)}
+                    className={`px-3 py-1.5 text-sm inter rounded transition-colors ${page === currentPage ? 'bg-[#39FE2B] text-[#09141F] font-semibold' : 'text-[#A2ACB9] bg-[#13212E] hover:bg-[#1a2f42]'}`}>
+                    {page}
                     </button>
-
-                    {/* Page numbers */}
-                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                        <button
-                            key={page}
-                            onClick={() => setCurrentPage(page)}
-                            className={`px-3 py-1.5 text-sm inter rounded transition-colors ${
-                                page === currentPage
-                                    ? 'bg-[#39FE2B] text-[#09141F] font-semibold'
-                                    : 'text-[#A2ACB9] bg-[#13212E] hover:bg-[#1a2f42]'
-                            }`}
-                        >
-                            {page}
-                        </button>
-                    ))}
-
-                    {/* Next */}
-                    <button
-                        onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
-                        disabled={currentPage === totalPages || totalPages === 0}
-                        className='px-3 py-1.5 text-sm inter text-[#A2ACB9] bg-[#13212E] hover:bg-[#1a2f42] disabled:opacity-30 disabled:cursor-not-allowed transition-colors rounded'
-                    >
-                        ›
-                    </button>
+                ))}
+                <button onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))} disabled={currentPage === totalPages || totalPages === 0}
+                    className='px-3 py-1.5 text-sm inter text-[#A2ACB9] bg-[#13212E] hover:bg-[#1a2f42] disabled:opacity-30 disabled:cursor-not-allowed transition-colors rounded'>›</button>
                 </div>
             </div>
             </section>
         </div>
-        {/* Instant top-up */}
-        <form onSubmit={handleSubmit} className='space-grotesk w-95 bg-[#192735] p-5 rounded-xl'>
+
+        {/* Deposit form */}
+        <form onSubmit={handleSubmit} className='space-grotesk w-full xl:w-95 bg-[#192735] p-5 rounded-xl'>
             <header className='flex items-center gap-2 my-5'>
-            <IconCreditCardPay className='text-[#AFFF9A]'></IconCreditCardPay>
+            <IconCreditCardPay className='text-[#AFFF9A]' />
             <h1 className='text-white text-xl font-bold'>INSTANT TOP-UP</h1>
             </header>
-            {/* Selecting Amount */}
             <section className='mb-4'>
-                <p className='text-[#A2ACB9] text-sm font-medium mb-3'>SELECT AMOUNT</p>
-                <div className='flex gap-5 mb-3'>
-                    <button type='button' onClick={() => handleAmount(50)} className={`w-25 py-4 bg-[#1E2D3D] text-white font-bold rounded-md cursor-pointer border-1 hover:bg-[#263544] ${Number(amount) === 50 ? " border-[#AFFF9A]" : "border-[#1E2D3D]"}`}>$50</button>
-                    <button type='button' onClick={() => handleAmount(100)} className={`w-25 py-4 bg-[#1E2D3D] text-white font-bold rounded-md cursor-pointer border-1 hover:bg-[#263544] ${Number(amount) === 100 ? "border-[#AFFF9A]" : "border-[#1E2D3D]"}`}>$100</button>
-                    <button type='button' onClick={() => handleAmount(500)} className={`w-25 py-4 bg-[#1E2D3D] text-white font-bold rounded-md cursor-pointer border-1 hover:bg-[#263544] ${Number(amount) === 500 ? "border-[#AFFF9A]" : "border-[#1E2D3D]"}`}>$500</button>
-                </div>
-                <div className='bg-black flex items-center px-2 py-3 rounded-lg'>
-                    <IconCurrencyDollar className='text-[#A2ACB9]'></IconCurrencyDollar>
-                    <input type="text" value={amount} onChange={(e) => {
-                    const value = e.target.value;
-
-                    // only numbers allowed
-                    if (/^\d*$/.test(value)) {
-                        setAmount(value);
-                    }
-                    }} 
-                    placeholder='Custom Amount' 
-                    className='text-white text-lg placeholder:font-bold
-                    border-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none
-                    focus:outline-none focus:ring-0 focus:border-transparent'/>
-                </div>
-                </section>
-                {/* Payment Method */}
-                <section>
-                <p className='text-[#A2ACB9] text-sm font-medium mb-3'>PAYMENT METHOD</p>
-                <button onClick={() => handleSelectPayment("bitcoin")} className='inter flex justify-between items-center bg-[#09141F] px-3 py-4 my-3 w-full rounded-lg cursor-pointer'>
-                    <div className='flex justify-center items-center gap-2'>
-                    <IconCurrencyBitcoin className='text-[#F7931A]'></IconCurrencyBitcoin>
-                    <label htmlFor="" className='text-white font-medium'>Bitcoin (BTC)</label>
-                    </div>
-                    <input type="radio" name='paymentMethod' checked={selectedPayment === "bitcoin"} className='appearance-none
-                    w-5 h-5
-                    rounded-full
-                    border-3 border-[#A2ACB9]
-                    bg-transparent
-                    checked:border-[#AFFF9A]
-                    checked:bg-[#AFFF9A]
-                    relative
-                    cursor-pointer'/>
-                </button>
-                {selectedPayment === "bitcoin" && 
-                <>
-                <div className='bg-black flex items-center px-2 py-4 rounded-lg'>
-                    <input type="text" name='address' value={formData.address} onChange={e => handleFieldChange('address', e.target.value)}
-                    placeholder='Enter BTC wallet address' 
-                    className='text-white w-full text-lg px-3 placeholder:font-lignt
-                    border-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none
-                    focus:outline-none focus:ring-0 focus:border-transparent'/>
-                </div>
-                </>
-                }
-                {selectedPayment === "bitcoin" && errors.address && <p className="text-red-500">{errors.address}</p>}
-                <button onClick={() => handleSelectPayment("bank")} className='inter flex justify-between items-center bg-[#09141F] px-3 py-4 my-3 w-full rounded-lg cursor-pointer'>
-                    <div className='flex justify-center items-center gap-2'>
-                    <IconBuildingBank className='text-[#60A5FA]'></IconBuildingBank>
-                    <label htmlFor="" className='text-white font-medium'>Bank Transfer</label>
-                    </div>
-                    <input type="radio" name='paymentMethod' checked={selectedPayment === "bank"} className='appearance-none
-                    w-5 h-5
-                    rounded-full
-                    border-3 border-[#A2ACB9]
-                    bg-transparent
-                    checked:border-[#AFFF9A]
-                    checked:bg-[#AFFF9A]
-                    relative
-                    cursor-pointer'/>
-                </button>
-                {selectedPayment === "bank" && 
-                <>
-                <div className='bg-black flex items-center px-2 py-4 rounded-lg'>
-                    <input type="text" value={formData.iban} onChange={e => handleFieldChange('iban', e.target.value)}
-                    placeholder='Enter Bank address' 
-                    className='text-white w-full text-lg px-3 placeholder:font-lignt
-                    border-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none
-                    focus:outline-none focus:ring-0 focus:border-transparent'/>
-                </div>
-                </>
-                }
-                {selectedPayment === "bank" && errors.iban && <p className="text-red-500">{errors.iban}</p>}
-                <button  onClick={() => handleSelectPayment("card")} className='inter flex justify-between items-center bg-[#09141F] px-3 py-4 my-3 w-full rounded-lg cursor-pointer'>
-                    <div className='flex justify-center items-center gap-2'>
-                    <IconCreditCardFilled className='text-white'></IconCreditCardFilled>
-                    <label htmlFor="" className='text-white font-medium'>Credit Card</label>
-                    </div>
-                    <input type="radio" name='paymentMethod' checked={selectedPayment === "card"} className='appearance-none
-                    w-5 h-5
-                    rounded-full
-                    border-3 border-[#A2ACB9]
-                    bg-transparent
-                    checked:border-[#AFFF9A]
-                    checked:bg-[#AFFF9A]
-                    relative
-                    cursor-pointer'/>
-                </button>
-                {selectedPayment === "card" && 
-                <>
-                <div className='bg-black flex items-center px-2 py-4 rounded-lg'>
-                    <input type="text" value={formData.cardNumber} onChange={e => handleFieldChange('cardNumber', e.target.value)}
-                    placeholder='Enter Credit Card address' 
-                    className='text-white w-full text-lg px-3 placeholder:font-lignt
-                    border-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none
-                    focus:outline-none focus:ring-0 focus:border-transparent'/>
-                </div>
-                </>
-                }
-                {selectedPayment === "card" && errors.cardNumber && <p className="text-red-500">{errors.cardNumber}</p>}
-                {/* Deposit */}
-                <button type='submit' className='bg-[#39FE2B] w-full py-4 mt-4 text-xl font-bold rounded-md hover:bg-[#20df12] cursor-pointer'>CONFIRM DEPOSIT</button>
+            <p className='text-[#A2ACB9] text-sm font-medium mb-3'>SELECT AMOUNT</p>
+            <div className='flex gap-3 mb-3'>
+                <button type='button' onClick={() => handleAmount(50)} className={`flex-1 py-3 md:py-4 bg-[#1E2D3D] text-white font-bold rounded-md cursor-pointer border hover:bg-[#263544] ${Number(amount) === 50 ? "border-[#AFFF9A]" : "border-[#1E2D3D]"}`}>$50</button>
+                <button type='button' onClick={() => handleAmount(100)} className={`flex-1 py-3 md:py-4 bg-[#1E2D3D] text-white font-bold rounded-md cursor-pointer border hover:bg-[#263544] ${Number(amount) === 100 ? "border-[#AFFF9A]" : "border-[#1E2D3D]"}`}>$100</button>
+                <button type='button' onClick={() => handleAmount(500)} className={`flex-1 py-3 md:py-4 bg-[#1E2D3D] text-white font-bold rounded-md cursor-pointer border hover:bg-[#263544] ${Number(amount) === 500 ? "border-[#AFFF9A]" : "border-[#1E2D3D]"}`}>$500</button>
+            </div>
+            <div className='bg-black flex items-center px-2 py-3 rounded-lg'>
+                <IconCurrencyDollar className='text-[#A2ACB9]' />
+                <input type="text" value={amount} onChange={(e) => { if (/^\d*$/.test(e.target.value)) setAmount(e.target.value); }}
+                placeholder='Custom Amount'
+                className='text-white text-lg placeholder:font-bold border-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:outline-none focus:ring-0 focus:border-transparent w-full' />
+            </div>
             </section>
             <section>
-            <p className='text-[#A2ACB9] text-xs mt-4 text-center'>TRANSACTION ARE ENCRYPTED AND <br /> PROCESSED VIA KINETIC-GRADE SECURE <br /> LAYERS. NO FEES ON INITIAL DAILY TOP-UP</p>
+            <p className='text-[#A2ACB9] text-sm font-medium mb-3'>PAYMENT METHOD</p>
+            {/* Bitcoin */}
+            <button type='button' onClick={() => handleSelectPayment("bitcoin")} className='inter flex justify-between items-center bg-[#09141F] px-3 py-4 my-3 w-full rounded-lg cursor-pointer'>
+                <div className='flex items-center gap-2'>
+                <IconCurrencyBitcoin className='text-[#F7931A]' />
+                <label className='text-white font-medium'>Bitcoin (BTC)</label>
+                </div>
+                <input type="radio" name='paymentMethod' readOnly checked={selectedPayment === "bitcoin"} className='appearance-none w-5 h-5 rounded-full border-[3px] border-[#A2ACB9] bg-transparent checked:border-[#AFFF9A] checked:bg-[#AFFF9A] cursor-pointer' />
+            </button>
+            {selectedPayment === "bitcoin" && (
+                <div className='bg-black flex items-center px-2 py-4 rounded-lg'>
+                <input type="text" name='address' value={formData.address} onChange={e => handleFieldChange('address', e.target.value)}
+                    placeholder='Enter BTC wallet address'
+                    className='text-white w-full text-lg px-3 border-none focus:outline-none focus:ring-0 focus:border-transparent' />
+                </div>
+            )}
+            {selectedPayment === "bitcoin" && errors.address && <p className="text-red-500 text-sm">{errors.address}</p>}
+            {/* Bank */}
+            <button type='button' onClick={() => handleSelectPayment("bank")} className='inter flex justify-between items-center bg-[#09141F] px-3 py-4 my-3 w-full rounded-lg cursor-pointer'>
+                <div className='flex items-center gap-2'>
+                <IconBuildingBank className='text-[#60A5FA]' />
+                <label className='text-white font-medium'>Bank Transfer</label>
+                </div>
+                <input type="radio" name='paymentMethod' readOnly checked={selectedPayment === "bank"} className='appearance-none w-5 h-5 rounded-full border-[3px] border-[#A2ACB9] bg-transparent checked:border-[#AFFF9A] checked:bg-[#AFFF9A] cursor-pointer' />
+            </button>
+            {selectedPayment === "bank" && (
+                <div className='bg-black flex items-center px-2 py-4 rounded-lg'>
+                <input type="text" value={formData.iban} onChange={e => handleFieldChange('iban', e.target.value)}
+                    placeholder='Enter Bank address'
+                    className='text-white w-full text-lg px-3 border-none focus:outline-none focus:ring-0 focus:border-transparent' />
+                </div>
+            )}
+            {selectedPayment === "bank" && errors.iban && <p className="text-red-500 text-sm">{errors.iban}</p>}
+            {/* Card */}
+            <button type='button' onClick={() => handleSelectPayment("card")} className='inter flex justify-between items-center bg-[#09141F] px-3 py-4 my-3 w-full rounded-lg cursor-pointer'>
+                <div className='flex items-center gap-2'>
+                <IconCreditCardFilled className='text-white' />
+                <label className='text-white font-medium'>Credit Card</label>
+                </div>
+                <input type="radio" name='paymentMethod' readOnly checked={selectedPayment === "card"} className='appearance-none w-5 h-5 rounded-full border-[3px] border-[#A2ACB9] bg-transparent checked:border-[#AFFF9A] checked:bg-[#AFFF9A] cursor-pointer' />
+            </button>
+            {selectedPayment === "card" && (
+                <div className='bg-black flex items-center px-2 py-4 rounded-lg'>
+                <input type="text" value={formData.cardNumber} onChange={e => handleFieldChange('cardNumber', e.target.value)}
+                    placeholder='Enter Credit Card address'
+                    className='text-white w-full text-lg px-3 border-none focus:outline-none focus:ring-0 focus:border-transparent' />
+                </div>
+            )}
+            {selectedPayment === "card" && errors.cardNumber && <p className="text-red-500 text-sm">{errors.cardNumber}</p>}
+            <button type='submit' className='bg-[#39FE2B] w-full py-4 mt-4 text-xl font-bold rounded-md hover:bg-[#20df12] cursor-pointer'>CONFIRM DEPOSIT</button>
+            </section>
+            <section>
+            <p className='text-[#A2ACB9] text-xs mt-4 text-center'>TRANSACTION ARE ENCRYPTED AND PROCESSED VIA KINETIC-GRADE SECURE LAYERS. NO FEES ON INITIAL DAILY TOP-UP</p>
             </section>
         </form>
-    </div>
-    {showModal &&
-    <>
-    {/* Backdrop */}
-      <div
-        onClick={() => setShowModal(false)}
-        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
-      />
-
-      {/* Modal */}
-      <div className="fixed inset-0 flex items-center justify-center z-50 px-4">
-        <div className="space-grotesk bg-[#0b1824] rounded-2xl p-8 w-full max-w-sm shadow-2xl">
-
-          {/* Close button */}
-          <div className="flex justify-end mb-2">
-            <button onClick={() => setShowModal(false)} className="text-[#94A3B8] hover:text-white cursor-pointer">
-              <IconX size={20} />
-            </button>
-          </div>
-
-          {/* Icon */}
-          <div className="flex justify-center mb-5">
-            <IconCircleCheckFilled size={64} className="text-[#39FE2B]" />
-          </div>
-
-          {/* Text */}
-          <h2 className="text-white text-2xl font-bold text-center mb-2">
-            Deposit Successful!
-          </h2>
-          <p className="text-[#94A3B8] text-sm text-center mb-6">
-            Your funds are being processed and will reflect in your balance shortly.
-          </p>
-
-          {/* Summary */}
-          <div className="bg-[#192735] rounded-xl p-4 mb-6 space-y-3">
-            <div className="flex justify-between text-sm">
-              <span className="text-[#94A3B8]">Amount</span>
-              <span className="text-white font-bold">${amount}</span>
-            </div>
-            <div className="border-t border-[#1E2D3D]" />
-            <div className="flex justify-between text-sm">
-              <span className="text-[#94A3B8]">Method</span>
-              <span className="text-white font-bold">{selectedPayment}</span>
-            </div>
-            <div className="border-t border-[#1E2D3D]" />
-            <div className="flex justify-between text-sm">
-              <span className="text-[#94A3B8]">Status</span>
-              <span className="text-[#39FE2B] font-bold">Confirmed</span>
-            </div>
-          </div>
-
-          {/* Button */}
-          <button
-            onClick={() => setShowModal(false)}
-            className="bg-[#39FE2B] w-full py-3 font-bold rounded-md hover:bg-[#20df12] cursor-pointer"
-          >
-            BACK TO GAME
-          </button>
         </div>
-      </div>
+
+        {/* Success Modal */}
+        {showModal && (
+        <>
+            <div onClick={() => setShowModal(false)} className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40" />
+            <div className="fixed inset-0 flex items-center justify-center z-50 px-4">
+            <div className="space-grotesk bg-[#0b1824] rounded-2xl p-6 md:p-8 w-full max-w-sm shadow-2xl">
+                <div className="flex justify-end mb-2">
+                <button onClick={() => setShowModal(false)} className="text-[#94A3B8] hover:text-white cursor-pointer"><IconX size={20} /></button>
+                </div>
+                <div className="flex justify-center mb-5">
+                <IconCircleCheckFilled size={64} className="text-[#39FE2B]" />
+                </div>
+                <h2 className="text-white text-xl md:text-2xl font-bold text-center mb-2">Deposit Successful!</h2>
+                <p className="text-[#94A3B8] text-sm text-center mb-6">Your funds are being processed and will reflect in your balance shortly.</p>
+                <div className="bg-[#192735] rounded-xl p-4 mb-6 space-y-3">
+                <div className="flex justify-between text-sm"><span className="text-[#94A3B8]">Amount</span><span className="text-white font-bold">${amount}</span></div>
+                <div className="border-t border-[#1E2D3D]" />
+                <div className="flex justify-between text-sm"><span className="text-[#94A3B8]">Method</span><span className="text-white font-bold">{selectedPayment}</span></div>
+                <div className="border-t border-[#1E2D3D]" />
+                <div className="flex justify-between text-sm"><span className="text-[#94A3B8]">Status</span><span className="text-[#39FE2B] font-bold">Confirmed</span></div>
+                </div>
+                <button onClick={() => setShowModal(false)} className="bg-[#39FE2B] w-full py-3 font-bold rounded-md hover:bg-[#20df12] cursor-pointer">BACK TO GAME</button>
+            </div>
+            </div>
+        </>
+        )}
     </>
-    }
-    </>
-  )
+    )
 }
 
 export default Deposit

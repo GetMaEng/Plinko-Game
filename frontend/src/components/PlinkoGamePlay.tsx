@@ -4,6 +4,11 @@ import { BIN_COLORS } from "../utils/bin";
 import type { RiskLevel, RowCount } from "../types/GameConfig";
 import { generateMultipliers } from "../utils/generateMulitipliers";
 
+import * as walletApi from "../api/wallet";
+import * as historyApi from "../api/history";
+
+import type { Status } from "../types/History"
+
 // Area for Plinko Game
 const WIDTH = 750;
 const HEIGHT = 650;
@@ -37,9 +42,23 @@ type Props = {
   ballsRef: React.MutableRefObject<Ball[]>;
   risk: RiskLevel;
   rows: RowCount;
+  betAmount: number;
+  walletId: number;
+  userId: number;
+  onBallLanded: () => void;
+  activeBallCountRef: React.MutableRefObject<number>;
+  setIsBetting: (v: boolean) => void;
 };
 
-function PlinkoGamePlay({ ballsRef, risk, rows }: Props) {
+function PlinkoGamePlay({ ballsRef, risk, rows, betAmount, walletId, userId, onBallLanded, activeBallCountRef, setIsBetting }: Props) {
+
+  const walletIdRef = useRef<number>(walletId);
+  const betAmountRef = useRef<number>(betAmount);
+
+  // Keep refs in sync with latest prop values
+  useEffect(() => { walletIdRef.current = walletId; }, [walletId]);
+  useEffect(() => { betAmountRef.current = betAmount; }, [betAmount]);
+  
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const pegsRef = useRef<{ x: number; y: number }[]>([]);
   const binAnimRef = useRef<number[]>(Array(BINS).fill(0));
@@ -65,6 +84,7 @@ function PlinkoGamePlay({ ballsRef, risk, rows }: Props) {
       isCOLS(20);
       isSPACING_Y(30);
     }
+    
   }, [ROWS])
 
   const BOTTOM_OFFSET = 20;
@@ -95,6 +115,7 @@ function PlinkoGamePlay({ ballsRef, risk, rows }: Props) {
 
   // --- Game loop ---
   useEffect(() => {
+    
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -238,14 +259,53 @@ function PlinkoGamePlay({ ballsRef, risk, rows }: Props) {
         ball.vy = Math.max(-MAX_SPEED, Math.min(MAX_SPEED, ball.vy));
 
         // bottom
-        if (ball.y > BIN_Y) {
+        if (ball.y > BIN_Y && ball.active) {
           const index = Math.floor((ball.x - START_X) / (binWidth + GAP));
+          const clampedIndex = Math.max(0, Math.min(BINS - 1, index));
 
-          if (index >= 0 && index < BINS) {
-            binAnimRef.current[index] = 1; // trigger animation
+          binAnimRef.current[clampedIndex] = 1;
+          ball.active = false;
+
+          const currentWalletId = walletIdRef.current;
+          const currentBet = betAmountRef.current;
+          
+          const multiplier = Number(MULTIPLIERS[clampedIndex % MULTIPLIERS.length]);
+          const payout = parseFloat((currentBet * multiplier).toFixed(2)) // positive = profit, negative = loss
+          const profit = parseFloat((payout - currentBet).toFixed(2));
+          const status: Status = payout >= currentBet ? "profit" : "loss";
+
+          if (currentWalletId !== undefined && currentBet !== 0) {
+            // Update wallet balance
+            walletApi.updateBalance(currentWalletId, userId, payout).then(() => {
+              onBallLanded();
+            });
+            
+            // Update total earning (only on profit)
+            if (status === "profit") {
+              walletApi.updateTotalEarning(currentWalletId, userId, payout);
+              walletApi.updateHighestProfit(currentWalletId, userId, profit);
+            }
+
+            // Record game history
+            historyApi.createHistory(
+              currentBet,           // how much they bet
+              `${multiplier}x`,   // which multiplier they hit
+              payout,             // total payout returned
+              status,             // "profit" | "loss"
+              currentWalletId
+            ).then(() => {
+              onBallLanded();
+            });
+          } else {
+            console.warn("walletId is undefined, skipping wallet update and history record");
+            onBallLanded();
           }
 
-          ball.active = false;
+          activeBallCountRef.current -= 1;
+          if (activeBallCountRef.current <= 0) {
+            activeBallCountRef.current = 0; // safety clamp
+            setIsBetting(false);            // unlock settings only when last ball lands
+          }
         }
       });
 
@@ -264,20 +324,21 @@ function PlinkoGamePlay({ ballsRef, risk, rows }: Props) {
 
     update();
     return () => cancelAnimationFrame(animationFrame);
-  }, [RISK]);
+  }, [RISK, walletId]);
 
   return (
-    <>
-      <div className="h-175 rounded-lg bg-black text-white">
+    /* Wrapper scrolls horizontally on screens narrower than 750px */
+    <div className="w-full overflow-x-auto">
+      <div className="min-w-[750px] rounded-lg bg-black text-white">
         <div className="flex items-center justify-center w-full">
-            <canvas
+          <canvas
             ref={canvasRef}
             width={WIDTH}
             height={HEIGHT}
-            />
+          />
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

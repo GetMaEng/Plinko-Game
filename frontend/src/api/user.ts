@@ -57,13 +57,17 @@ export const getUserInfoById = async (userId: number) => {
     }
 }
 
-export const updataUserInfo = async (userId: number) => {
+export const updateUserInfo = async (userId: number, username: string, imageProfile: string) => {
     try {
-        await Axios.patch(`/user/${userId}`);
+        const response = await Axios.patch(`/user/${userId}`, {
+            username,
+            imageProfile 
+        });
         return {
             status: 200,
             success: true,
-            msg: `Update information of this user ID ${userId}.`
+            msg: `Update information of this user ID ${userId}.`,
+            data: response.data.data
         }
     } catch (e) {
         return {
@@ -76,14 +80,18 @@ export const updataUserInfo = async (userId: number) => {
 
 export const loginUser = async (email: string, password: string) => {
     try {
-        await Axios.post("/user/login", {
+        const response = await Axios.post("/user/login", {
             email: email,
             password: password,
         })
+
+        const token = response.data.token
+        localStorage.setItem('token', token)
+        
         return {
             status: 200,
             success: true,
-            msg: "Login successfully."
+            msg: "Login successfully.",
         }
     } catch (e) {
         return {
@@ -96,7 +104,7 @@ export const loginUser = async (email: string, password: string) => {
 
 export const logoutUser = async () => {
     try {
-        await Axios("user/logout");
+        await Axios.post("user/logout");
         return {
             status: 200,
             success: true,

@@ -7,10 +7,17 @@ import * as transactionApi from "../api/transaction";
 import * as walletApi from "../api/wallet";
 import type { Wallet } from "../types/Wallet"
 import type { Transaction } from '../types/Transaction';
+import { Navigate } from 'react-router-dom';
 
 function WalletPage() {
 
-  const [userId, setUserId] = useState<number>(Number(localStorage.getItem("userId")));
+  const token = localStorage.getItem('token') // or however you store auth
+
+  if (!token) {
+    return <Navigate to="/login" replace />
+  }
+
+  const userId = (Number(localStorage.getItem("userId")));
 
   // =============================================================
   //                        APIs Call Wallet
@@ -49,10 +56,7 @@ function WalletPage() {
       
     getUserWallet(walletId, userId);
   }, [userId, walletId]);
-
-  // =============================================================
-  // =============================================================
-
+  
   // =============================================================
   //                        APIs Call Transaction
   // =============================================================
@@ -75,11 +79,11 @@ function WalletPage() {
   return (
     <>
       <div className="flex">
-        <SideBar></SideBar>
-        <div className="w-full">
-          <TopBar></TopBar>
-          <Deposit transactions={transactions} onSuccess={getAllUserTransaction}></Deposit>
-          <Withdraw onSuccess={getAllUserTransaction}></Withdraw>
+        <SideBar />
+        <div className="w-full min-w-0">
+          <TopBar />
+          <Deposit transactions={transactions} onSuccess={getAllUserTransaction} />
+          <Withdraw onSuccess={getAllUserTransaction} />
         </div>
       </div>
     </>

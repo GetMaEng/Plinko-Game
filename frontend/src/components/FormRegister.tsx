@@ -111,13 +111,13 @@ function FormRegister() {
     }
 
   return (
-    <div className='inter flex justify-center items-center mt-10'>
-        <form onSubmit={handleSubmit} className='w-115 bg-[#0b1824] shadow-xl/30 p-10 rounded-lg'>
+    <div className='inter flex justify-center items-center mt-6 sm:mt-10 px-4 w-full'>
+        <form onSubmit={handleSubmit} className='w-full max-w-sm sm:max-w-md md:max-w-lg bg-[#0b1824] shadow-xl/30 p-6 sm:p-8 md:p-10 rounded-lg'>
             <header className='mb-4'>
                 <h1 className='text-[#DCE6F5] text-2xl font-bold mb-3'>New Uplink</h1>
             </header>
             <section className='flex justify-center'>
-                <div className="relative w-28 h-28 border-4 border-[#aeff9a50] rounded-lg overflow-visible shadow-2xl">
+                <div className="relative w-20 h-20 sm:w-28 sm:h-28 border-4 border-[#aeff9a50] rounded-lg overflow-visible shadow-2xl">
                     <img 
                     src={currentImg} 
                     alt="Avatar" 
@@ -133,7 +133,7 @@ function FormRegister() {
                     </button>
                 </div>
             </section>
-            <section className='my-10'>
+            <section className='my-6 sm:my-10'>
                 <label htmlFor="" className='space-grotesk text-[#94A3B8] text-sm font-light'>USERNAME</label> <br />
                 <div className='flex items-center bg-black px-4 py-4 my-2 gap-5 rounded-lg'>
                     <IconUser className='text-gray-600'></IconUser>
@@ -159,7 +159,7 @@ function FormRegister() {
                 </div>
                 {errors.confirmPassword && <p className='text-red-500 mb-5'>{errors.confirmPassword}</p>}
             </section>
-            <button type='submit' className='space-grotesk bg-[#39FE2B] w-full py-3 mb-10 font-bold rounded-md hover:bg-[#20df12] cursor-pointer flex justify-center items-center gap-2'>INITIALIZE ACCOUNT <IconBolt></IconBolt> </button>
+            <button type='submit' className='space-grotesk bg-[#39FE2B] w-full py-3 mb-6 sm:mb-10 font-bold rounded-md hover:bg-[#20df12] cursor-pointer flex justify-center items-center gap-2'>INITIALIZE ACCOUNT <IconBolt></IconBolt> </button>
             <section className='flex justify-center text-sm w-full'>
                 <Link to={"/login"} className='text-[#94A3B8] hover:underline'>
                     <div className='flex gap-2'>

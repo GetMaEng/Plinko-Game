@@ -3,11 +3,11 @@ import { IconFingerprint, IconLock, IconEye, IconEyeOff } from "@tabler/icons-re
 import { Link, useNavigate } from "react-router-dom";
 import * as userApi from "../api/user";
 import z from 'zod';
+
 const loginSchema = z.object({
     email: z
         .string()
         .email("Must be a valid email"),
-
     password: z
         .string()
         .min(6, "At least 6 characters")
@@ -28,16 +28,14 @@ function FormLogin() {
     const [errors, setErrors] = useState<FieldErrors>({});
     const [apiError, setApiError] = useState<string>("");
 
-    // API get user info - userId
     const getMe = async () => {
         const response = await userApi.getMe();
         if (response.success) {
-            localStorage.setItem("userId", (response.data.userId));   
+            localStorage.setItem("userId", (response.data.userId));
             navigate("/main-plinko-game");
         }
     }
 
-    // API Login an account
     const loginUser = async (data: LoginSchema) => {
         const response = await userApi.loginUser(data.email, data.password);
         if (response.success) {
@@ -50,13 +48,13 @@ function FormLogin() {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
-        setErrors((prev) => ({ ...prev, [name]: undefined })); // clear error on change
+        setErrors((prev) => ({ ...prev, [name]: undefined }));
         setApiError("");
     };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        
+
         const result = loginSchema.safeParse(formData)
 
         if (!result.success) {
@@ -64,54 +62,70 @@ function FormLogin() {
             result.error.issues.forEach((err) => {
                 const field = err.path[0] as keyof LoginSchema;
                 if (!fieldErrors[field]) {
-                    fieldErrors[field] = err.message; // keep first error per field
+                    fieldErrors[field] = err.message;
                 }
             });
             setErrors(fieldErrors);
             return;
         }
 
-        // Send to backend via API user
         loginUser(formData);
     }
 
   return (
-    <>
-    <div className='inter flex justify-center mt-10'>
-        <form onSubmit={handleSubmit} className='w-115 bg-[#0b1824] shadow-xl/30 p-10 rounded-lg'>
+    <div className='inter flex justify-center mt-6 sm:mt-10 px-4'>
+        <form onSubmit={handleSubmit} className='w-full max-w-sm sm:max-w-md md:max-w-lg bg-[#0b1824] shadow-xl/30 p-6 sm:p-8 md:p-10 rounded-lg'>
             <header className='text-center mb-4'>
-                <h1 className='text-[#DCE6F5] text-2xl font-bold mb-3'>Secure Uplink</h1>
-                <p className='text-[#94A3B8] text-sm font-light'>ENTER CREDENTIALS TO PROCEED</p>
+                <h1 className='text-[#DCE6F5] text-xl sm:text-2xl font-bold mb-2 sm:mb-3'>Secure Uplink</h1>
+                <p className='text-[#94A3B8] text-xs sm:text-sm font-light'>ENTER CREDENTIALS TO PROCEED</p>
             </header>
-            <section className='my-10'>
-                <label htmlFor="" className='space-grotesk text-[#94A3B8] text-sm font-light'>IDENTIFICATION</label> <br />
-                <div className='flex items-center bg-black px-4 py-4 my-2 gap-5 rounded-lg'>
-                    <IconFingerprint className='text-gray-600'></IconFingerprint>
-                    <input name='email' type="email" value={formData.email} onChange={handleChange} placeholder="Enter your email" className='text-white bg-black w-full placeholder:text-gray-600 border-none focus:outline-none focus:ring-0 focus:border-transparent'/>
+            <section className='my-6 sm:my-10'>
+                <label className='space-grotesk text-[#94A3B8] text-xs sm:text-sm font-light'>IDENTIFICATION</label><br />
+                <div className='flex items-center bg-black px-3 sm:px-4 py-3 sm:py-4 my-2 gap-3 sm:gap-5 rounded-lg'>
+                    <IconFingerprint className='text-gray-600 shrink-0' />
+                    <input
+                        name='email'
+                        type="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        placeholder="Enter your email"
+                        className='text-white bg-black w-full placeholder:text-gray-600 border-none focus:outline-none focus:ring-0 focus:border-transparent text-sm sm:text-base'
+                    />
                 </div>
-                {errors.email && <p className='text-red-500 mb-5'>{errors.email}</p>}
-                 {apiError && <p className='text-red-500 mb-5'>{apiError}</p>}
-                <label htmlFor="" className='space-grotesk text-[#94A3B8] text-sm font-light'>ACCESS KEY</label> <br />
-                <div className='flex items-center bg-black px-4 py-4 my-2 gap-5 rounded-lg'>
-                    <IconLock className='text-gray-600'></IconLock>
-                    <input name='password' type={`${isLock ? "password" : "text"}`} value={formData.password} onChange={handleChange} placeholder='Enter your password' className='text-white bg-black w-full placeholder:text-gray-600 border-none focus:outline-none focus:ring-0 focus:border-transparent'/>
-                    <button type="button" onClick={() => setIsLock(prev => !prev)}>
-                    {isLock 
-                        ? <IconEyeOff className='text-gray-600 cursor-pointer' /> 
-                        : <IconEye className='text-gray-600 cursor-pointer' />
-                    }
+                {errors.email && <p className='text-red-500 text-sm mb-4'>{errors.email}</p>}
+                {apiError && <p className='text-red-500 text-sm mb-4'>{apiError}</p>}
+                <label className='space-grotesk text-[#94A3B8] text-xs sm:text-sm font-light'>ACCESS KEY</label><br />
+                <div className='flex items-center bg-black px-3 sm:px-4 py-3 sm:py-4 my-2 gap-3 sm:gap-5 rounded-lg'>
+                    <IconLock className='text-gray-600 shrink-0' />
+                    <input
+                        name='password'
+                        type={isLock ? "password" : "text"}
+                        value={formData.password}
+                        onChange={handleChange}
+                        placeholder='Enter your password'
+                        className='text-white bg-black w-full placeholder:text-gray-600 border-none focus:outline-none focus:ring-0 focus:border-transparent text-sm sm:text-base'
+                    />
+                    <button type="button" onClick={() => setIsLock(prev => !prev)} className='shrink-0'>
+                        {isLock
+                            ? <IconEyeOff className='text-gray-600 cursor-pointer' />
+                            : <IconEye className='text-gray-600 cursor-pointer' />
+                        }
                     </button>
                 </div>
-                {errors.password && <p className='text-red-500 mb-5'>{errors.password}</p>}
+                {errors.password && <p className='text-red-500 text-sm mb-4'>{errors.password}</p>}
             </section>
-            <button type='submit' className='space-grotesk bg-[#39FE2B] w-full py-3 mb-10 font-bold rounded-md hover:bg-[#20df12] cursor-pointer'>INITIALIZE LOGIN</button>
-            <section className='flex justify-center gap-5 text-sm w-full'>
-                <p className='text-[#94A3B8] '>New to the Plinko Game?</p>
-                <Link to={"/signup"} className='text-[#AFFF9A] font-bold hover:underline'>Establish Account</Link>
+            <button
+                type='submit'
+                className='space-grotesk bg-[#39FE2B] w-full py-3 mb-6 sm:mb-10 font-bold rounded-md hover:bg-[#20df12] cursor-pointer text-sm sm:text-base'
+            >
+                INITIALIZE LOGIN
+            </button>
+            <section className='flex flex-col sm:flex-row justify-center items-center gap-1 sm:gap-5 text-sm w-full'>
+                <p className='text-[#94A3B8] text-xs sm:text-sm'>New to the Plinko Game?</p>
+                <Link to={"/signup"} className='text-[#AFFF9A] text-xs sm:text-sm font-bold hover:underline'>Establish Account</Link>
             </section>
         </form>
     </div>
-    </>
   )
 }
 
