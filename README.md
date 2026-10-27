@@ -1,6 +1,6 @@
 # PLINKGO GAME
  
-A full-stack Plinko arcade game built with React, TypeScript, and a REST API backend. Players drop balls through a peg-filled board, land on multiplier bins, and win or lose based on where the ball settles — all tracked with real wallet balances, transaction history, and a live leaderboard.
+A full-stack Plinko arcade game built with React, TypeScript, and a REST API backend. Players drop balls through a peg-filled board, land on multiplier bins, and win or lose based on where the ball settles — all tracked with virtual wallet balances, transaction history, and a leaderboard.
  
 ---
  
